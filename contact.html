@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Contact Life Shepherd International College - Admissions, inquiries, and visit requests. Get in touch with us today."
+    />
+    <title>Contact Us | Life Shepherd International College</title>
+    <link rel="icon" type="image/png" href="images/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header" id="header">
+      <nav class="nav-container">
+        <a href="index.html" class="logo">
+          <img src="images/logo.png" alt="LSIC Logo" class="logo-img" />
+          <div class="logo-text">
+            <span class="logo-name">Life Shepherd</span>
+            <span class="logo-tagline">International College</span>
+          </div>
+        </a>
+        <ul class="nav-menu" id="nav-menu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="about.html" class="nav-link">About Us</a></li>
+          <li><a href="academics.html" class="nav-link">Academics</a></li>
+          <li><a href="staff.html" class="nav-link">Our Staff</a></li>
+          <li><a href="contact.html" class="nav-link active">Contact</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main">
+      <!-- Page Banner -->
+      <section class="page-banner">
+        <div class="page-banner-content">
+          <h1>Contact Us</h1>
+          <p>
+            We'd love to hear from you. Reach out for admissions, inquiries, or
+            to schedule a visit
+          </p>
+          <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <span>Contact</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section">
+        <div class="section-content">
+          <div class="contact-content">
+            <!-- Contact Info -->
+            <div class="contact-info">
+              <h3>Get In Touch</h3>
+              <div class="contact-item">
+                <div class="contact-item-icon">
+                  <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div>
+                  <strong>Address</strong><br />
+                  Life Shepherd International College<br />
+                  Nyanyanu-Kakraba Down, Kasoa, Ghana
+                </div>
+              </div>
+              <div class="contact-item">
+                <div class="contact-item-icon">
+                  <i class="fa-solid fa-phone"></i>
+                </div>
+                <div>
+                  <strong>Phone</strong><br />
+                  <a href="tel:+233244745177">0244 745 177</a> / <a href="tel:+233244745177">+233 24 474 5177</a><br />
+                  <a href="tel:+233558099525">0558 099 525</a> / <a href="tel:+233558099525">+233 55 809 9525</a>
+                </div>
+              </div>
+              <div class="contact-item">
+                <div class="contact-item-icon">
+                  <i class="fa-solid fa-envelope"></i>
+                </div>
+                <div>
+                  <strong>Email</strong><br />
+                  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=Ivapreku@gmail.com" target="_blank" rel="noopener noreferrer">Ivapreku@gmail.com</a>
+                </div>
+              </div>
+              <div class="contact-item">
+                <div class="contact-item-icon">
+                  <i class="fa-solid fa-clock"></i>
+                </div>
+                <div>
+                  <strong>School Hours</strong><br />
+                  Monday - Thursday: 6:30 AM - 4:30 PM<br />
+                  Friday: 6:30 AM - 3:30 PM<br />
+                  Office Hours: 8:00 AM - 4:00 PM
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form">
+              <h3>Send Us a Message</h3>
+              <form id="contactForm">
+                <div class="form-group">
+                  <label for="name">Full Name *</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    placeholder="Enter your full name"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email Address *</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    placeholder="Enter your email address"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="phone">Phone Number</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="Enter your phone number"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="subject">Subject *</label>
+                  <select id="subject" name="subject" required>
+                    <option value="">Select a subject</option>
+                    <option value="admissions">Admissions Inquiry</option>
+                    <option value="academic">Academic Information</option>
+                    <option value="visit">Schedule a Visit</option>
+                    <option value="employment">Employment Opportunity</option>
+                    <option value="general">General Inquiry</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="message">Message *</label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    required
+                    placeholder="Please tell us how we can help you..."
+                  ></textarea>
+                </div>
+                <button type="submit" class="cta-button primary submit-btn">
+                  <span class="btn-text"
+                    ><i class="fa-solid fa-paper-plane"></i> Send Message</span
+                  >
+                  <span class="btn-loading" style="display: none"
+                    >Sending...</span
+                  >
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Admissions Info -->
+          <div class="admissions-section">
+            <div class="section-header">
+              <span class="section-badge">Enrolment</span>
+              <h2>Admissions Information</h2>
+            </div>
+            <div class="cards-grid admissions-grid">
+              <div class="card">
+                <div class="card-icon">
+                  <i class="fa-solid fa-file-pen"></i>
+                </div>
+                <h3>Application Process</h3>
+                <p>
+                  1. Visit the school or call for enquiry<br />
+                  2. Collect and complete the application form<br />
+                  3. Submit required documents<br />
+                  4. Assessment / Interview (for some levels)<br />
+                  5. Admission confirmation & fee payment
+                </p>
+              </div>
+              <div class="card">
+                <div class="card-icon">
+                  <i class="fa-solid fa-file-lines"></i>
+                </div>
+                <h3>Required Documents</h3>
+                <p>
+                  • Birth Certificate<br />
+                  • Previous School Report (if applicable)<br />
+                  • Passport-sized Photos (4)<br />
+                  • Immunization Records<br />
+                  • Parent / Guardian ID
+                </p>
+              </div>
+              <div class="card">
+                <div class="card-icon">
+                  <i class="fa-solid fa-coins"></i>
+                </div>
+                <h3>School Fees</h3>
+                <p>
+                  We offer competitive and affordable fees with flexible payment
+                  plans. Contact our admissions office for the detailed fee
+                  structure and any available scholarships or discounts.
+                </p>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-section footer-about">
+          <div class="footer-logo">
+            <img src="images/logo.png" alt="LSIC Logo" />
+            <h4>Life Shepherd International College</h4>
+          </div>
+          <p>
+            Guiding young minds from Crèche to Primary 6 with love, excellence,
+            and purpose. <em>"Excellence Among Peers"</em>
+          </p>
+
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <a href="index.html">Home</a>
+          <a href="about.html">About Us</a>
+          <a href="academics.html">Academics</a>
+          <a href="staff.html">Our Staff</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-section">
+          <h4>Programs</h4>
+          <a href="academics.html">Crèche & Nursery</a>
+          <a href="academics.html">Kindergarten</a>
+          <a href="academics.html">Primary School</a>
+        </div>
+        <div class="footer-section">
+          <h4>Contact Info</h4>
+          <p><i class="fa-solid fa-location-dot"></i> Nyanyanu-Kakraba Down, Kasoa, Ghana</p>
+          <p><i class="fa-solid fa-phone"></i> <a href="tel:+233244745177">0244 745 177</a> / <a href="tel:+233558099525">0558 099 525</a></p>
+          <p><i class="fa-solid fa-envelope"></i> <a href="https://mail.google.com/mail/?view=cm&fs=1&to=Ivapreku@gmail.com" target="_blank" rel="noopener noreferrer">Ivapreku@gmail.com</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Life Shepherd International College. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
