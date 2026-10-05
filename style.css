@@ -260,19 +260,11 @@ h1, h2, h3, h4, h5, h6 {
 .hero {
   background: linear-gradient(
       135deg,
-<<<<<<< HEAD
       rgba(13, 74, 46, 0.78) 0%,
       rgba(12, 45, 94, 0.72) 50%,
       rgba(21, 101, 192, 0.68) 100%
     ),
     url("images/building.jpg");
-=======
-      rgba(13, 74, 46, 0.92) 0%,
-      rgba(12, 45, 94, 0.88) 50%,
-      rgba(21, 101, 192, 0.85) 100%
-    ),
-    url("images/school-campus.png");
->>>>>>> 7842c92efd56029f583efc6d2b52a89fd8fd6dd6
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -1898,9 +1890,10 @@ img[src*="kids-playing.png"],
   object-position: center 35% !important;
 }
 
-/* Perfect framing for Campus & Creche Facilities images */
+/* Perfect framing for Campus & Creche Facilities & Student images */
 img[src*="building.jpg"],
 img[src*="creche classroom.jpg"],
+img[src*="stud.jpg"],
 .facility-img[src*="building.jpg"],
 .facility-img[src*="creche classroom.jpg"] {
   object-fit: cover;
