@@ -1875,10 +1875,11 @@ img[src*="kids grad.jpg"],
 }
 
 /* Perfect framing for IT Teacher image so teacher is clearly visible */
-img[src*="IT teacher.jpg"],
-.student-img[src*="IT teacher.jpg"] {
+img[src*="IT teacher"],
+.student-img[src*="IT teacher"],
+.academic-image img[src*="IT teacher"] {
   object-fit: cover;
-  object-position: top center !important;
+  object-position: center top !important;
 }
 
 /* Perfect framing for Extracurricular Activities image - brought down for optimal view */
@@ -1898,6 +1899,7 @@ img[src*="completed-building.jpg"],
 img[src*="modern-campus-building.jpg"],
 img[src*="playground.jpg"],
 img[src*="creche classroom.jpg"],
+img[src*="KG-class.jpg"],
 img[src*="stud.jpg"],
 .facility-img[src*="building.jpg"],
 .facility-img[src*="campus-building.jpg"],
@@ -1905,6 +1907,7 @@ img[src*="stud.jpg"],
 .facility-img[src*="completed-building.jpg"],
 .facility-img[src*="modern-campus-building.jpg"],
 .facility-img[src*="playground.jpg"],
+.facility-img[src*="KG-class.jpg"],
 .facility-img[src*="creche classroom.jpg"] {
   object-fit: cover;
   object-position: center center !important;
