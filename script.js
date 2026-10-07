@@ -4,29 +4,45 @@
 // ====================================
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Mobile menu toggle
+  // Navigation menu toggle from top of header
   const hamburger = document.getElementById("hamburger");
   const navMenu = document.getElementById("nav-menu");
 
   if (hamburger && navMenu) {
-    hamburger.addEventListener("click", function () {
-      this.classList.toggle("active");
+    hamburger.setAttribute("aria-expanded", "false");
+
+    hamburger.addEventListener("click", function (e) {
+      e.stopPropagation();
+      const isActive = this.classList.toggle("active");
       navMenu.classList.toggle("active");
+      this.setAttribute("aria-expanded", isActive ? "true" : "false");
     });
 
-    // Close mobile menu when clicking outside
+    // Close menu when clicking outside
     document.addEventListener("click", function (e) {
       if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
         hamburger.classList.remove("active");
         navMenu.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", "false");
       }
     });
 
-    // Close mobile menu when clicking a nav link
+    // Close menu on Escape key
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && navMenu.classList.contains("active")) {
+        hamburger.classList.remove("active");
+        navMenu.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", "false");
+        hamburger.focus();
+      }
+    });
+
+    // Close menu when clicking a nav link
     navMenu.querySelectorAll(".nav-link").forEach((link) => {
       link.addEventListener("click", () => {
         hamburger.classList.remove("active");
         navMenu.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", "false");
       });
     });
   }
