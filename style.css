@@ -685,7 +685,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .program-preview-img {
   position: relative;
-  height: 220px;
+  height: 230px;
   overflow: hidden;
 }
 
@@ -694,6 +694,21 @@ h1, h2, h3, h4, h5, h6 {
   height: 100%;
   object-fit: cover;
   transition: var(--transition-slow);
+}
+
+.program-preview-img img.program-img-creche,
+.program-preview-img img[src*="creche classroom"] {
+  object-position: center 18% !important;
+}
+
+.program-preview-img img.program-img-kg,
+.program-preview-img img[src*="KG-class"] {
+  object-position: center 25% !important;
+}
+
+.program-preview-img img.program-img-primary,
+.program-preview-img img[src*="IT teacher"] {
+  object-position: center 15% !important;
 }
 
 .program-preview-card:hover .program-preview-img img {
@@ -1874,12 +1889,31 @@ img[src*="kids grad.jpg"],
   object-position: center center !important;
 }
 
-/* Perfect framing for IT Teacher image so teacher is clearly visible */
+/* Perfect framing for IT Teacher image so teacher and classroom are clearly visible */
 img[src*="IT teacher"],
 .student-img[src*="IT teacher"],
-.academic-image img[src*="IT teacher"] {
+.academic-image img[src*="IT teacher"],
+.program-img-primary {
   object-fit: cover;
-  object-position: center top !important;
+  object-position: center 15% !important;
+}
+
+/* Perfect framing for Creche & Nursery classroom images */
+img[src*="creche classroom"],
+.facility-img[src*="creche classroom"],
+.academic-image img[src*="creche classroom"],
+.program-img-creche {
+  object-fit: cover;
+  object-position: center 18% !important;
+}
+
+/* Perfect framing for Kindergarten images */
+img[src*="KG-class"],
+.facility-img[src*="KG-class"],
+.academic-image img[src*="KG-class"],
+.program-img-kg {
+  object-fit: cover;
+  object-position: center 25% !important;
 }
 
 /* Perfect framing for Extracurricular Activities image - brought down for optimal view */
@@ -1891,24 +1925,20 @@ img[src*="kids-playing.png"],
   object-position: center 35% !important;
 }
 
-/* Perfect framing for Campus, Playground, Creche Facilities & Student images */
+/* Perfect framing for Campus, Playground, Facilities & Student images */
 img[src*="building.jpg"],
 img[src*="campus-building.jpg"],
 img[src*="campus-infrastructure.jpg"],
 img[src*="completed-building.jpg"],
 img[src*="modern-campus-building.jpg"],
 img[src*="playground.jpg"],
-img[src*="creche classroom.jpg"],
-img[src*="KG-class.jpg"],
 img[src*="stud.jpg"],
 .facility-img[src*="building.jpg"],
 .facility-img[src*="campus-building.jpg"],
 .facility-img[src*="campus-infrastructure.jpg"],
 .facility-img[src*="completed-building.jpg"],
 .facility-img[src*="modern-campus-building.jpg"],
-.facility-img[src*="playground.jpg"],
-.facility-img[src*="KG-class.jpg"],
-.facility-img[src*="creche classroom.jpg"] {
+.facility-img[src*="playground.jpg"] {
   object-fit: cover;
   object-position: center center !important;
 }
