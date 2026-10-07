@@ -575,14 +575,14 @@ h1, h2, h3, h4, h5, h6 {
    ==================================== */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
   margin: 40px 0;
 }
 
 .card {
   background: var(--white);
-  padding: 36px 28px;
+  padding: 32px 20px;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   transition: var(--transition);
@@ -1632,6 +1632,11 @@ h1, h2, h3, h4, h5, h6 {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 30px;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 
   .programs-preview-grid {
