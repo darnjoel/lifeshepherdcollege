@@ -1970,26 +1970,17 @@ img[src*="KG-class"],
 
 /* Perfect framing for Extracurricular Activities image - brought down for optimal view */
 img[src*="kidsplaying.jpg"],
-img[src*="kids-playing.png"],
-.student-img[src*="kidsplaying.jpg"],
-.student-img[src*="kids-playing.png"] {
+.student-img[src*="kidsplaying.jpg"] {
   object-fit: cover;
   object-position: center 35% !important;
 }
 
-/* Perfect framing for Campus, Playground, Facilities & Student images */
+/* Perfect framing for Campus, Playground & Facilities images */
 img[src*="building.jpg"],
-img[src*="campus-building.jpg"],
 img[src*="campus-infrastructure.jpg"],
-img[src*="completed-building.jpg"],
-img[src*="modern-campus-building.jpg"],
 img[src*="playground.jpg"],
-img[src*="stud.jpg"],
 .facility-img[src*="building.jpg"],
-.facility-img[src*="campus-building.jpg"],
 .facility-img[src*="campus-infrastructure.jpg"],
-.facility-img[src*="completed-building.jpg"],
-.facility-img[src*="modern-campus-building.jpg"],
 .facility-img[src*="playground.jpg"] {
   object-fit: cover;
   object-position: center center !important;
