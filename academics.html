@@ -22,7 +22,7 @@
   <header class="header" id="header">
     <nav class="nav-container">
       <div class="nav-left">
-        <button class="hamburger" id="hamburger" aria-label="Toggle Navigation Menu" type="button">
+        <button class="hamburger" id="hamburger" aria-label="Open Navigation Menu" aria-expanded="false" type="button">
           <span></span>
           <span></span>
           <span></span>
@@ -35,15 +35,77 @@
           </div>
         </a>
       </div>
-      <ul class="nav-menu" id="nav-menu">
-        <li><a href="index.html" class="nav-link">Home</a></li>
-        <li><a href="about.html" class="nav-link">About Us</a></li>
-        <li><a href="academics.html" class="nav-link active">Academics</a></li>
-        <li><a href="staff.html" class="nav-link">Our Staff</a></li>
-        <li><a href="contact.html" class="nav-link">Contact</a></li>
-      </ul>
+
+      <div class="header-actions">
+        <a href="contact.html" class="header-cta-btn">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Admissions</span>
+        </a>
+      </div>
     </nav>
   </header>
+
+  <!-- Slide-out Navigation Drawer -->
+  <div class="nav-drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="nav-drawer" id="navDrawer" aria-hidden="true">
+    <div class="drawer-header">
+      <a href="index.html" class="drawer-logo">
+        <img src="images/logo.png" alt="LSIC Logo" class="logo-img" />
+        <div class="logo-text">
+          <span class="logo-name">Life Shepherd</span>
+          <span class="logo-tagline">International College</span>
+        </div>
+      </a>
+      <button class="drawer-close" id="drawerClose" aria-label="Close Navigation Menu" type="button">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <ul class="nav-menu" id="nav-menu">
+        <li>
+          <a href="index.html" class="nav-link">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+          </a>
+        </li>
+        <li>
+          <a href="about.html" class="nav-link">
+            <i class="fa-solid fa-school"></i>
+            <span>About Us</span>
+          </a>
+        </li>
+        <li>
+          <a href="academics.html" class="nav-link active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Academics</span>
+          </a>
+        </li>
+        <li>
+          <a href="staff.html" class="nav-link">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <span>Our Staff</span>
+          </a>
+        </li>
+        <li>
+          <a href="contact.html" class="nav-link">
+            <i class="fa-solid fa-envelope"></i>
+            <span>Contact</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="drawer-footer">
+      <div class="drawer-contact-info">
+        <p><i class="fa-solid fa-phone"></i> +233 (0) 54 836 2950</p>
+        <p><i class="fa-solid fa-location-dot"></i> Pokuase, Accra - Ghana</p>
+      </div>
+      <a href="contact.html" class="btn btn-primary drawer-cta">
+        <i class="fa-solid fa-paper-plane"></i> Get in Touch
+      </a>
+    </div>
+  </aside>
 
   <main class="main">
     <!-- Page Banner -->
