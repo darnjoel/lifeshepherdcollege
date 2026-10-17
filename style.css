@@ -439,9 +439,10 @@ body.drawer-open {
 
 .drawer-contact-info p {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   font-size: 0.82rem;
+  line-height: 1.45;
   color: rgba(255, 255, 255, 0.78);
   margin: 0;
 }
@@ -451,6 +452,17 @@ body.drawer-open {
   font-size: 0.9rem;
   width: 16px;
   text-align: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.drawer-contact-info a {
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+.drawer-contact-info a:hover {
+  color: var(--gold);
 }
 
 .drawer-cta {
