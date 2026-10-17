@@ -1618,10 +1618,24 @@ body.drawer-open {
 /* Admissions Section */
 .admissions-section {
   margin-bottom: 60px;
+  scroll-margin-top: 100px;
+}
+
+.admissions-grid {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.admissions-grid .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .admissions-grid .card p {
   text-align: left;
+  line-height: 1.8;
+  flex: 1;
 }
 
 /* Social Section */
@@ -1867,6 +1881,12 @@ body.drawer-open {
   .cards-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+  }
+
+  .admissions-grid {
+    grid-template-columns: 1fr;
+    max-width: 550px;
+    margin: 40px auto;
   }
 
   .programs-preview-grid {
