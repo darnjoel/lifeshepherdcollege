@@ -323,17 +323,34 @@ function showNotification(message, type) {
 // ====================================
 // Smooth scroll for anchor links
 // ====================================
-document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+document.querySelectorAll('a[href*="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (e) {
     const href = this.getAttribute("href");
-    if (href !== "#") {
-      e.preventDefault();
-      const target = document.querySelector(href);
+    if (!href || href === "#") return;
+
+    const hashIndex = href.indexOf("#");
+    const pathPart = href.slice(0, hashIndex);
+    const hashPart = href.slice(hashIndex);
+
+    const isCurrentPage =
+      !pathPart ||
+      window.location.pathname.endsWith("/" + pathPart) ||
+      window.location.pathname.endsWith(pathPart) ||
+      (window.location.pathname.endsWith("/") && (pathPart === "index.html" || pathPart === ""));
+
+    if (isCurrentPage && hashPart) {
+      const target = document.querySelector(hashPart);
       if (target) {
+        e.preventDefault();
         target.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
+        if (history.pushState) {
+          history.pushState(null, null, hashPart);
+        } else {
+          location.hash = hashPart;
+        }
       }
     }
   });

@@ -75,6 +75,10 @@ html {
   font-size: 16px;
 }
 
+[id] {
+  scroll-margin-top: 100px;
+}
+
 body {
   font-family: var(--font-body);
   line-height: 1.7;
