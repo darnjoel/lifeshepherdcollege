@@ -38,6 +38,24 @@
   <body>
     <!-- Header -->
     <header class="header" id="header">
+      <!-- Top Announcement Banner -->
+      <div class="announcement-banner" id="announcementBanner" role="region" aria-label="School Announcements">
+        <div class="banner-inner">
+          <div class="banner-content">
+            <span class="banner-tag"><i class="fa-solid fa-bullhorn"></i> Important</span>
+            <span class="banner-text">
+              <strong>PTA General Meeting:</strong> Sat, Nov 14, 2026 &bull; <strong>Term 2 Reopening:</strong> Jan 12, 2027
+            </span>
+            <button class="banner-link-btn" type="button" data-open-notice="notif-pta-nov">
+              View Notice <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+          <button class="banner-close-btn" id="bannerCloseBtn" aria-label="Dismiss banner" type="button">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
       <nav class="nav-container">
         <div class="nav-left">
           <button class="hamburger" id="hamburger" aria-label="Open Navigation Menu" aria-expanded="false" type="button">
@@ -55,6 +73,12 @@
         </div>
 
         <div class="header-actions">
+          <div class="notif-bell-wrapper">
+            <button class="header-notif-btn" id="notifBellBtn" aria-label="Parent Notices & Announcements" type="button" aria-expanded="false" aria-haspopup="true">
+              <i class="fa-solid fa-bell"></i>
+              <span class="notif-badge" id="notifBadgeCount">5</span>
+            </button>
+          </div>
           <a href="contact.html#admissions" class="header-cta-btn">
             <i class="fa-solid fa-graduation-cap"></i>
             <span>Admissions</span>
@@ -103,6 +127,13 @@
             <a href="staff.html" class="nav-link">
               <i class="fa-solid fa-chalkboard-user"></i>
               <span>Our Staff</span>
+            </a>
+          </li>
+          <li>
+            <a href="index.html#notice-board" class="nav-link">
+              <i class="fa-solid fa-bullhorn"></i>
+              <span>Parent Notices</span>
+              <span class="nav-badge-pill">New</span>
             </a>
           </li>
           <li>
@@ -197,6 +228,67 @@
             </div>
             <h3 data-count="0">100%</h3>
             <p>Commitment to Care</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Parent Notice Board & Academic Calendar Section -->
+      <section class="notice-board-section" id="notice-board">
+        <div class="section-content">
+          <div class="section-header">
+            <span class="section-badge"><i class="fa-solid fa-bullhorn"></i> Official Announcements</span>
+            <h2>Parent Notice Board & Important Dates</h2>
+            <p>
+              Stay informed with official circulars, PTA meetings, term reopening schedules, mid-term breaks, vacation periods, and graduation ceremonies.
+            </p>
+          </div>
+
+          <!-- Notice Category Filter Tabs -->
+          <div class="notice-filter-bar" role="tablist" aria-label="Notice Categories">
+            <button class="notice-tab-btn active" data-category="all" role="tab" aria-selected="true" type="button">
+              <i class="fa-solid fa-border-all"></i> All Notices <span class="tab-count">5</span>
+            </button>
+            <button class="notice-tab-btn" data-category="pta" role="tab" aria-selected="false" type="button">
+              <i class="fa-solid fa-users"></i> PTA Meetings <span class="tab-count">1</span>
+            </button>
+            <button class="notice-tab-btn" data-category="reopening" role="tab" aria-selected="false" type="button">
+              <i class="fa-solid fa-door-open"></i> Term Reopening <span class="tab-count">1</span>
+            </button>
+            <button class="notice-tab-btn" data-category="break" role="tab" aria-selected="false" type="button">
+              <i class="fa-solid fa-mug-hot"></i> Mid-Term Breaks <span class="tab-count">1</span>
+            </button>
+            <button class="notice-tab-btn" data-category="vacation" role="tab" aria-selected="false" type="button">
+              <i class="fa-solid fa-umbrella-beach"></i> Vacation Dates <span class="tab-count">1</span>
+            </button>
+            <button class="notice-tab-btn" data-category="graduation" role="tab" aria-selected="false" type="button">
+              <i class="fa-solid fa-graduation-cap"></i> Graduation Day <span class="tab-count">1</span>
+            </button>
+          </div>
+
+          <!-- Notice Cards Grid (Hydrated by JS) -->
+          <div class="notices-grid" id="noticesGrid"></div>
+
+          <!-- Parent Alert Subscription CTA Banner -->
+          <div class="notice-subscribe-cta">
+            <div class="subscribe-cta-content">
+              <div class="subscribe-cta-icon">
+                <i class="fa-solid fa-bell-concierge"></i>
+              </div>
+              <div class="subscribe-cta-text">
+                <h3>Receive Instant Parent Alerts On Your Phone</h3>
+                <p>
+                  Get timely reminders about PTA meetings, school reopening dates, mid-term breaks, and emergency circulars via WhatsApp and SMS.
+                </p>
+              </div>
+            </div>
+            <div class="subscribe-cta-actions">
+              <button class="cta-button primary" id="openSubscribeModalBtn" type="button">
+                <i class="fa-solid fa-paper-plane"></i> Subscribe for Alerts
+              </button>
+              <a href="https://wa.me/233244745177?text=Hello%20Life%20Shepherd%20College,%20please%20add%20me%20to%20the%20official%20parent%20broadcast%20channel." target="_blank" rel="noopener noreferrer" class="cta-button secondary">
+                <i class="fa-brands fa-whatsapp"></i> Join WhatsApp Channel
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -433,6 +525,7 @@
           <a href="about.html">About Us</a>
           <a href="academics.html">Academics</a>
           <a href="staff.html">Our Staff</a>
+          <a href="index.html#notice-board">Parent Notices & Dates</a>
           <a href="contact.html">Contact</a>
         </div>
         <div class="footer-section">

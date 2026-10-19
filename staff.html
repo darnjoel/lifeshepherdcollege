@@ -24,6 +24,24 @@
   <body>
     <!-- Header -->
     <header class="header" id="header">
+      <!-- Top Announcement Banner -->
+      <div class="announcement-banner" id="announcementBanner" role="region" aria-label="School Announcements">
+        <div class="banner-inner">
+          <div class="banner-content">
+            <span class="banner-tag"><i class="fa-solid fa-bullhorn"></i> Important</span>
+            <span class="banner-text">
+              <strong>PTA General Meeting:</strong> Sat, Nov 14, 2026 &bull; <strong>Term 2 Reopening:</strong> Jan 12, 2027
+            </span>
+            <button class="banner-link-btn" type="button" data-open-notice="notif-pta-nov">
+              View Notice <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+          <button class="banner-close-btn" id="bannerCloseBtn" aria-label="Dismiss banner" type="button">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
       <nav class="nav-container">
         <div class="nav-left">
           <button class="hamburger" id="hamburger" aria-label="Open Navigation Menu" aria-expanded="false" type="button">
@@ -41,6 +59,12 @@
         </div>
 
         <div class="header-actions">
+          <div class="notif-bell-wrapper">
+            <button class="header-notif-btn" id="notifBellBtn" aria-label="Parent Notices & Announcements" type="button" aria-expanded="false" aria-haspopup="true">
+              <i class="fa-solid fa-bell"></i>
+              <span class="notif-badge" id="notifBadgeCount">5</span>
+            </button>
+          </div>
           <a href="contact.html#admissions" class="header-cta-btn">
             <i class="fa-solid fa-graduation-cap"></i>
             <span>Admissions</span>
@@ -89,6 +113,13 @@
             <a href="staff.html" class="nav-link active">
               <i class="fa-solid fa-chalkboard-user"></i>
               <span>Our Staff</span>
+            </a>
+          </li>
+          <li>
+            <a href="index.html#notice-board" class="nav-link">
+              <i class="fa-solid fa-bullhorn"></i>
+              <span>Parent Notices</span>
+              <span class="nav-badge-pill">New</span>
             </a>
           </li>
           <li>
@@ -258,6 +289,7 @@
           <a href="about.html">About Us</a>
           <a href="academics.html">Academics</a>
           <a href="staff.html">Our Staff</a>
+          <a href="index.html#notice-board">Parent Notices & Dates</a>
           <a href="contact.html">Contact</a>
         </div>
         <div class="footer-section">
