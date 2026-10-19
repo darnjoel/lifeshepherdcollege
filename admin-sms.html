@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Life Shepherd International College - Admin Bulk SMS Broadcast Portal for parent notifications regarding PTA meetings, reopening, vacation, and breaks."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin Bulk SMS Broadcast Portal | Life Shepherd International College</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/logo.png" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="admin-sms-body">
+    <!-- Admin Authentication PIN Gate (Overlay) -->
+    <div class="admin-pin-overlay" id="adminPinOverlay">
+      <div class="admin-pin-card">
+        <div class="admin-pin-logo">
+          <img src="images/logo.png" alt="LSIC Crest" />
+        </div>
+        <h2>Life Shepherd Administration</h2>
+        <p class="admin-pin-subtitle">
+          Authorized Staff Portal: Parent Bulk SMS Broadcast System
+        </p>
+
+        <form id="adminPinForm" class="admin-pin-form">
+          <div class="pin-input-wrapper">
+            <i class="fa-solid fa-lock"></i>
+            <input
+              type="password"
+              id="adminPinInput"
+              placeholder="Enter Admin PIN (Default: 2026)"
+              autocomplete="current-password"
+              required
+            />
+            <button type="button" id="togglePinVisBtn" aria-label="Toggle PIN visibility">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+          <div class="pin-remember-wrapper">
+            <label>
+              <input type="checkbox" id="rememberSessionCheck" checked />
+              <span>Remember session on this device</span>
+            </label>
+          </div>
+          <button type="submit" class="admin-pin-submit-btn">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Access SMS Portal
+          </button>
+          <div class="pin-hint-text">
+            <i class="fa-solid fa-circle-info"></i> Default School Admin PIN: <strong>2026</strong>
+          </div>
+          <a href="index.html" class="pin-back-link">
+            <i class="fa-solid fa-arrow-left"></i> Return to Public Website
+          </a>
+        </form>
+      </div>
+    </div>
+
+    <!-- Admin Portal Header Navigation -->
+    <header class="admin-sms-header">
+      <div class="admin-header-container">
+        <div class="admin-header-left">
+          <a href="index.html" class="admin-logo-link">
+            <img src="images/logo.png" alt="LSIC Logo" class="admin-logo-img" />
+            <div class="admin-header-title-box">
+              <span class="admin-title-school">Life Shepherd International College</span>
+              <span class="admin-title-portal">
+                <i class="fa-solid fa-tower-broadcast"></i> Bulk SMS Broadcast Portal
+              </span>
+            </div>
+          </a>
+        </div>
+
+        <div class="admin-header-right">
+          <div class="admin-gateway-badge" id="gatewayStatusIndicator">
+            <span class="pulse-indicator online"></span>
+            <span id="gatewayNameText">Ghana SMS Gateway (Arkesel Ready)</span>
+          </div>
+          <a href="index.html" class="admin-exit-btn">
+            <i class="fa-solid fa-arrow-left"></i> <span>Back to Website</span>
+          </a>
+          <button class="admin-logout-btn" id="adminLogoutBtn" title="Lock Portal">
+            <i class="fa-solid fa-lock"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Workspace -->
+    <main class="admin-sms-main">
+      <div class="admin-sms-container">
+
+        <!-- Top Metrics Overview Bar -->
+        <section class="admin-metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon cat-pta">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="metric-details">
+              <span class="metric-label">Registered Parents</span>
+              <h3 class="metric-value" id="statParentCount">342</h3>
+              <span class="metric-sub">Crèche to Primary 6</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon cat-reopening">
+              <i class="fa-solid fa-coins"></i>
+            </div>
+            <div class="metric-details">
+              <span class="metric-label">SMS Units Balance</span>
+              <h3 class="metric-value" id="statCreditsBalance">4,850</h3>
+              <span class="metric-sub">Est. ~14 Full Broadcasts</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon cat-vacation">
+              <i class="fa-solid fa-paper-plane"></i>
+            </div>
+            <div class="metric-details">
+              <span class="metric-label">Broadcasts This Term</span>
+              <h3 class="metric-value" id="statBroadcastsSent">12</h3>
+              <span class="metric-sub">99.4% Delivery Rate</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon cat-break">
+              <i class="fa-solid fa-id-badge"></i>
+            </div>
+            <div class="metric-details">
+              <span class="metric-label">Sender ID</span>
+              <h3 class="metric-value">L-SHEPHERD</h3>
+              <span class="metric-sub">Approved Ghana Alphanumeric</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Broadcast Workspace Grid -->
+        <div class="admin-workspace-grid">
+
+          <!-- Left Column: SMS Composer & Settings -->
+          <div class="admin-composer-card">
+            <div class="composer-header">
+              <h2><i class="fa-solid fa-pen-to-square"></i> Compose Parent SMS Broadcast</h2>
+              <span class="composer-step-tag">Step-by-Step Dispatch</span>
+            </div>
+
+            <!-- 1. Quick Presets for Key School Notices -->
+            <div class="composer-section">
+              <label class="section-label">
+                <i class="fa-solid fa-bolt"></i> 1. Select Notice Template (One-Click Auto-Fill):
+              </label>
+              <div class="template-chips-grid">
+                <button
+                  type="button"
+                  class="template-chip active"
+                  data-template-id="pta"
+                >
+                  <i class="fa-solid fa-users"></i> PTA Meeting
+                </button>
+                <button
+                  type="button"
+                  class="template-chip"
+                  data-template-id="reopening"
+                >
+                  <i class="fa-solid fa-door-open"></i> Term Reopening
+                </button>
+                <button
+                  type="button"
+                  class="template-chip"
+                  data-template-id="break"
+                >
+                  <i class="fa-solid fa-mug-hot"></i> Mid-Term Break
+                </button>
+                <button
+                  type="button"
+                  class="template-chip"
+                  data-template-id="vacation"
+                >
+                  <i class="fa-solid fa-umbrella-beach"></i> Vacation & Reports
+                </button>
+                <button
+                  type="button"
+                  class="template-chip"
+                  data-template-id="graduation"
+                >
+                  <i class="fa-solid fa-graduation-cap"></i> Graduation Day
+                </button>
+                <button
+                  type="button"
+                  class="template-chip alert-chip"
+                  data-template-id="urgent"
+                >
+                  <i class="fa-solid fa-triangle-exclamation"></i> Urgent Advisory
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. Target Recipient Selection -->
+            <div class="composer-section">
+              <label class="section-label">
+                <i class="fa-solid fa-bullseye"></i> 2. Select Recipient Class / Audience:
+              </label>
+              <div class="recipient-options-grid">
+                <label class="recipient-option-card">
+                  <input
+                    type="radio"
+                    name="recipientGroup"
+                    value="all"
+                    data-count="342"
+                    checked
+                  />
+                  <div class="recipient-card-inner">
+                    <span class="recipient-name">All School Parents</span>
+                    <span class="recipient-count">342 contacts</span>
+                  </div>
+                </label>
+
+                <label class="recipient-option-card">
+                  <input
+                    type="radio"
+                    name="recipientGroup"
+                    value="creche"
+                    data-count="54"
+                  />
+                  <div class="recipient-card-inner">
+                    <span class="recipient-name">Crèche & Nursery</span>
+                    <span class="recipient-count">54 contacts</span>
+                  </div>
+                </label>
+
+                <label class="recipient-option-card">
+                  <input
+                    type="radio"
+                    name="recipientGroup"
+                    value="kg"
+                    data-count="78"
+                  />
+                  <div class="recipient-card-inner">
+                    <span class="recipient-name">Kindergarten (KG1 & KG2)</span>
+                    <span class="recipient-count">78 contacts</span>
+                  </div>
+                </label>
+
+                <label class="recipient-option-card">
+                  <input
+                    type="radio"
+                    name="recipientGroup"
+                    value="lower_primary"
+                    data-count="105"
+                  />
+                  <div class="recipient-card-inner">
+                    <span class="recipient-name">Lower Primary (P1 - P3)</span>
+                    <span class="recipient-count">105 contacts</span>
+                  </div>
+                </label>
+
+                <label class="recipient-option-card">
+                  <input
+                    type="radio"
+                    name="recipientGroup"
+                    value="upper_primary"
+                    data-count="105"
+                  />
+                  <div class="recipient-card-inner">
+                    <span class="recipient-name">Upper Primary (P4 - P6)</span>
+                    <span class="recipient-count">105 contacts</span>
+                  </div>
+                </label>
+
+                <label class="recipient-option-card" id="recipientCardWebSubscribers">
+                  <input
+                    type="radio"
+                    name="recipientGroup"
+                    value="web_subscribers"
+                    data-count="0"
+                    id="radioWebSubscribers"
+                  />
+                  <div class="recipient-card-inner">
+                    <span class="recipient-name"><i class="fa-solid fa-bell" style="color: #27ae60; margin-right: 4px;"></i> Online Subscribers</span>
+                    <span class="recipient-count" id="badgeWebSubscribers">0 contacts</span>
+                  </div>
+                </label>
+
+                <label class="recipient-option-card">
+                  <input
+                    type="radio"
+                    name="recipientGroup"
+                    value="custom"
+                    data-count="0"
+                  />
+                  <div class="recipient-card-inner">
+                    <span class="recipient-name">Custom Numbers List</span>
+                    <span class="recipient-count">Manual Input</span>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Custom phone numbers textarea (visible when custom selected) -->
+              <div class="custom-numbers-container" id="customNumbersContainer" style="display: none;">
+                <label for="customNumbersInput">Enter Ghanaian phone numbers separated by comma or new lines:</label>
+                <textarea
+                  id="customNumbersInput"
+                  rows="3"
+                  placeholder="0244745177, 0558099525, 0244123456..."
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- 3. SMS Message Textarea & Live Character Counter -->
+            <div class="composer-section">
+              <div class="sms-textarea-header">
+                <label class="section-label" for="smsMessageText">
+                  <i class="fa-solid fa-message"></i> 3. SMS Text Message:
+                </label>
+                <div class="char-counter-pill" id="charCounterPill">
+                  <span id="charCount">0</span> / 160 chars &bull; <span id="pageCount">1</span> SMS Unit
+                </div>
+              </div>
+
+              <textarea
+                id="smsMessageText"
+                rows="5"
+                placeholder="Type your SMS message here..."
+                required
+              ></textarea>
+
+              <div class="sms-cost-summary" id="smsCostSummary">
+                <i class="fa-solid fa-calculator"></i>
+                <span>Dispatch Calculation: <strong id="calcRecipientCount">342</strong> parents &times; <strong id="calcPagesCount">1</strong> SMS = <strong id="calcTotalUnits">342</strong> units (~GHS <span id="calcGhsCost">11.97</span>)</span>
+              </div>
+            </div>
+
+            <!-- 4. Ghana Gateway & Dispatch Configuration -->
+            <div class="composer-section gateway-settings-section">
+              <div class="collapsible-header" id="toggleGatewaySettingsBtn">
+                <div class="collapsible-title">
+                  <i class="fa-solid fa-sliders"></i>
+                  <span>4. Gateway & API Configuration (Arkesel / mNotify / Hubtel)</span>
+                </div>
+                <i class="fa-solid fa-chevron-down" id="gatewayChevron"></i>
+              </div>
+
+              <div class="collapsible-content" id="gatewaySettingsContent">
+                <div class="gateway-fields-grid">
+                  <div class="gateway-field-group">
+                    <label for="gatewaySelect">SMS Gateway Provider:</label>
+                    <select id="gatewaySelect" class="admin-input-styled">
+                      <option value="arkesel" selected>Arkesel Ghana (sms.arkesel.com) - Recommended</option>
+                      <option value="mnotify">mNotify Ghana (api.mnotify.com)</option>
+                      <option value="hubtel">Hubtel Ghana (smsc.hubtel.com)</option>
+                      <option value="simulation">Simulated Dispatch (Live Testing / Demo)</option>
+                    </select>
+                  </div>
+
+                  <div class="gateway-field-group">
+                    <label for="senderIdInput">Registered Sender ID:</label>
+                    <input
+                      type="text"
+                      id="senderIdInput"
+                      value="L-SHEPHERD"
+                      maxlength="11"
+                      class="admin-input-styled"
+                    />
+                    <small>Max 11 chars alphanumeric.</small>
+                  </div>
+
+                  <div class="gateway-field-group full-width">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <label for="apiKeyInput">Gateway API Key (Saved in your browser):</label>
+                      <span class="api-status-tag" id="apiKeyStatusTag">Simulation Active</span>
+                    </div>
+                    <div class="api-key-input-wrapper">
+                      <input
+                        type="password"
+                        id="apiKeyInput"
+                        placeholder="Paste your Arkesel/mNotify API Key here..."
+                        class="admin-input-styled"
+                      />
+                      <button type="button" id="saveApiKeyBtn" class="btn-save-key">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Key
+                      </button>
+                    </div>
+                    <small>If no live API key is entered, the portal automatically runs in **Live Testing & Simulation Mode** with realistic delivery tracking.</small>
+                  </div>
+                </div>
+
+                <!-- Test SMS Single Dispatch -->
+                <div class="single-test-dispatch-box">
+                  <label for="testPhoneNumber">Send a Single Test SMS to verify formatting on your phone:</label>
+                  <div class="test-dispatch-form">
+                    <input
+                      type="tel"
+                      id="testPhoneNumber"
+                      placeholder="e.g. 0244 745 177"
+                      value="0244745177"
+                      class="admin-input-styled"
+                    />
+                    <button type="button" class="btn-send-test" id="sendSingleTestBtn">
+                      <i class="fa-solid fa-mobile-screen"></i> Send Test SMS
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. Main Broadcast Trigger -->
+            <div class="composer-action-bar">
+              <button type="button" class="btn-broadcast-main" id="triggerBroadcastBtn">
+                <i class="fa-solid fa-paper-plane"></i> Send Bulk SMS Broadcast to <span id="btnRecipientCount">342</span> Parents
+              </button>
+              <button type="button" class="btn-composer-reset" id="resetComposerBtn" title="Reset Text">
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Live Phone Mockup & Delivery Preview -->
+          <div class="admin-preview-column">
+            <div class="phone-preview-card">
+              <div class="phone-preview-header">
+                <h3><i class="fa-solid fa-mobile-screen-button"></i> Live Parent Phone Preview</h3>
+                <span class="preview-badge">Real-time Simulation</span>
+              </div>
+
+              <!-- Smartphone Mockup Device -->
+              <div class="smartphone-frame">
+                <div class="smartphone-speaker"></div>
+                <div class="smartphone-camera"></div>
+
+                <div class="smartphone-screen">
+                  <!-- Phone Status Bar -->
+                  <div class="phone-status-bar">
+                    <span class="status-time" id="previewPhoneTime">10:30</span>
+                    <div class="status-icons">
+                      <i class="fa-solid fa-signal"></i>
+                      <i class="fa-solid fa-wifi"></i>
+                      <i class="fa-solid fa-battery-full"></i>
+                    </div>
+                  </div>
+
+                  <!-- Messages App Header -->
+                  <div class="phone-app-header">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <div class="phone-sender-info">
+                      <div class="sender-avatar">
+                        <img src="images/logo.png" alt="LSIC" />
+                      </div>
+                      <div class="sender-name-box">
+                        <span class="sender-name" id="previewSenderId">L-SHEPHERD</span>
+                        <i class="fa-solid fa-circle-check verified-badge" title="Official Sender ID"></i>
+                      </div>
+                      <span class="sender-sub">Text Message &bull; MTN / Telecel / AT</span>
+                    </div>
+                    <i class="fa-solid fa-circle-info"></i>
+                  </div>
+
+                  <!-- Messages Screen Content -->
+                  <div class="phone-chat-area">
+                    <div class="chat-date-stamp">Today <span id="previewMessageTime">10:30 AM</span></div>
+
+                    <div class="sms-speech-bubble" id="previewSpeechBubble">
+                      <!-- Live Text injected here -->
+                    </div>
+
+                    <div class="sms-delivery-receipt">
+                      <i class="fa-solid fa-check-double"></i> Delivered to Parent
+                    </div>
+                  </div>
+
+                  <!-- Phone Home Indicator Bar -->
+                  <div class="phone-home-indicator"></div>
+                </div>
+              </div>
+
+              <!-- Fast WhatsApp Broadcast Alternative Box -->
+              <div class="whatsapp-broadcast-alt-box">
+                <div class="wa-alt-icon">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <div class="wa-alt-text">
+                  <h4>Parent WhatsApp Channel Broadcast</h4>
+                  <p>Copy this message to paste into the official Life Shepherd WhatsApp parent group.</p>
+                </div>
+                <button type="button" class="btn-copy-wa" id="copyToWhatsAppBtn">
+                  <i class="fa-regular fa-copy"></i> Copy for WhatsApp
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bottom Section: Tabs for Sent Broadcasts History & Website Parent Subscribers -->
+        <section class="admin-history-section">
+          <!-- Tab Navigation -->
+          <div class="admin-tab-nav">
+            <button type="button" class="admin-tab-btn active" id="tabBroadcastLogsBtn">
+              <i class="fa-solid fa-clock-rotate-left"></i> Broadcast Delivery Logs <span class="tab-badge" id="logsTabBadge">3</span>
+            </button>
+            <button type="button" class="admin-tab-btn" id="tabSubscribersBtn">
+              <i class="fa-solid fa-users-viewfinder"></i> Website Parent Subscribers <span class="tab-badge" id="subscribersTabBadge">0</span>
+            </button>
+          </div>
+
+          <!-- Panel 1: Broadcast Delivery Logs -->
+          <div id="panelBroadcastLogs">
+            <div class="history-header">
+              <div class="history-title-box">
+                <h2><i class="fa-solid fa-clock-rotate-left"></i> Recent SMS Broadcasts & Delivery Logs</h2>
+                <p>Records of official SMS broadcasts sent to Life Shepherd parents</p>
+              </div>
+              <div class="history-actions">
+                <button type="button" class="btn-history-action" id="exportLogsCsvBtn">
+                  <i class="fa-solid fa-file-csv"></i> Export Logs CSV
+                </button>
+                <button type="button" class="btn-history-action secondary" id="clearHistoryBtn">
+                  <i class="fa-solid fa-trash-can"></i> Clear Logs
+                </button>
+              </div>
+            </div>
+
+            <div class="history-table-wrapper">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Category</th>
+                    <th>Audience</th>
+                    <th>Recipients</th>
+                    <th>Message Preview</th>
+                    <th>Gateway</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Panel 2: Website Parent Subscribers -->
+          <div id="panelSubscribers" style="display: none;">
+            <div class="history-header">
+              <div class="history-title-box">
+                <h2><i class="fa-solid fa-address-book"></i> Parent Alert Subscribers (Website Registrations)</h2>
+                <p>Parents who subscribed to receive SMS and WhatsApp circulars via the parent alert form</p>
+              </div>
+              <div class="history-actions">
+                <button type="button" class="btn-history-action" id="broadcastToSubscribersBtn">
+                  <i class="fa-solid fa-paper-plane"></i> Broadcast to All Subscribers
+                </button>
+                <button type="button" class="btn-history-action" id="exportSubscribersCsvBtn">
+                  <i class="fa-solid fa-file-csv"></i> Export Contacts CSV
+                </button>
+              </div>
+            </div>
+
+            <div class="history-table-wrapper">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>Registered Date</th>
+                    <th>Parent / Guardian</th>
+                    <th>Phone / WhatsApp</th>
+                    <th>Email</th>
+                    <th>Child's Class</th>
+                    <th>Alert Topics</th>
+                    <th>Channels</th>
+                    <th>Quick Action</th>
+                  </tr>
+                </thead>
+                <tbody id="subscribersTableBody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Dispatch Confirmation Modal -->
+    <div class="lsic-modal-backdrop" id="broadcastConfirmModal" aria-hidden="true" role="dialog">
+      <div class="lsic-modal-dialog" style="max-width: 540px;">
+        <div class="lsic-modal-header" style="background: linear-gradient(135deg, #063e23 0%, #005681 100%);">
+          <div class="lsic-modal-badges">
+            <span class="notice-category-badge cat-pta" style="background: rgba(255,255,255,0.2); color: #fff;">
+              <i class="fa-solid fa-paper-plane"></i> Broadcast Confirmation
+            </span>
+          </div>
+          <h2 class="lsic-modal-title">Confirm Bulk SMS Dispatch</h2>
+          <button class="lsic-modal-close-btn" id="closeConfirmModalBtn" aria-label="Close" type="button">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="lsic-modal-body" style="padding: 24px;">
+          <p style="margin-bottom: 16px;">
+            You are about to broadcast this official SMS to parents of <strong>Life Shepherd International College</strong>:
+          </p>
+
+          <div class="confirm-summary-box">
+            <div class="confirm-row">
+              <span>Audience Group:</span>
+              <strong id="confirmAudience">All Parents</strong>
+            </div>
+            <div class="confirm-row">
+              <span>Total Mobile Recipients:</span>
+              <strong id="confirmRecipients">342 Parent Numbers</strong>
+            </div>
+            <div class="confirm-row">
+              <span>SMS Units Required:</span>
+              <strong id="confirmUnits">342 Units</strong>
+            </div>
+            <div class="confirm-row">
+              <span>Sender ID:</span>
+              <strong id="confirmSenderId">L-SHEPHERD</strong>
+            </div>
+            <div class="confirm-row">
+              <span>Gateway:</span>
+              <strong id="confirmGateway">Arkesel Ghana API</strong>
+            </div>
+          </div>
+
+          <div class="confirm-message-preview">
+            <small>Message Content:</small>
+            <div id="confirmMessageText" class="confirm-text-box"></div>
+          </div>
+        </div>
+
+        <div class="lsic-modal-footer" style="justify-content: flex-end; gap: 12px;">
+          <button type="button" class="btn btn-secondary" id="cancelBroadcastBtn">
+            Cancel
+          </button>
+          <button type="button" class="cta-button primary" id="executeBroadcastBtn" style="padding: 10px 22px;">
+            <i class="fa-solid fa-check"></i> Authorize & Dispatch Now
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portal Footer -->
+    <footer class="admin-sms-footer">
+      <div class="admin-footer-content">
+        <p>&copy; 2026 Life Shepherd International College &bull; School Administration SMS Infrastructure &bull; Nyanyanu-Kakraba Down, Kasoa</p>
+      </div>
+    </footer>
+
+    <!-- Portal JavaScript -->
+    <script src="admin-sms.js"></script>
+  </body>
+</html>

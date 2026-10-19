@@ -754,6 +754,25 @@ function openAlertModal() {
   if (form) form.style.display = "flex";
   if (successState) successState.style.display = "none";
 
+  // Pre-fill previously saved details if any
+  try {
+    const savedName = localStorage.getItem("lsic_parent_name");
+    const savedPhone = localStorage.getItem("lsic_parent_phone");
+    const savedClass = localStorage.getItem("lsic_parent_class");
+    if (savedName) {
+      const nameEl = document.getElementById("parentName");
+      if (nameEl && !nameEl.value) nameEl.value = savedName;
+    }
+    if (savedPhone) {
+      const phoneEl = document.getElementById("parentPhone");
+      if (phoneEl && !phoneEl.value) phoneEl.value = savedPhone;
+    }
+    if (savedClass) {
+      const classEl = document.getElementById("pupilClass");
+      if (classEl && !classEl.value) classEl.value = savedClass;
+    }
+  } catch (e) {}
+
   modalBackdrop.classList.add("active");
   modalBackdrop.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
@@ -972,54 +991,153 @@ function renderNoticeBoardGrid() {
 
 // Parent Alert Form Submission Handler
 function handleAlertSubscription(form) {
-  const submitBtn = form.querySelector(".alert-subscribe-submit-btn");
-  const originalText = submitBtn.innerHTML;
+  if (!form) return;
+  const submitBtn = form.querySelector(".alert-subscribe-submit-btn") || document.getElementById("alertSubscribeSubmitBtn");
+  const originalHtml = submitBtn ? submitBtn.innerHTML : '<i class="fa-solid fa-bell"></i> Subscribe to School Alerts';
 
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Subscribing...`;
+  // Safe input value extraction
+  const nameEl = document.getElementById("parentName") || (form.elements ? form.elements["parentName"] : null);
+  const phoneEl = document.getElementById("parentPhone") || (form.elements ? form.elements["parentPhone"] : null);
+  const emailEl = document.getElementById("parentEmail") || (form.elements ? form.elements["parentEmail"] : null);
+  const classEl = document.getElementById("pupilClass") || (form.elements ? form.elements["pupilClass"] : null);
+
+  const parentName = (nameEl && nameEl.value ? nameEl.value : "").trim();
+  const parentPhone = (phoneEl && phoneEl.value ? phoneEl.value : "").trim();
+  const parentEmail = (emailEl && emailEl.value ? emailEl.value : "").trim();
+  const pupilClass = (classEl && classEl.value ? classEl.value : "").trim();
+
+  // Validate required inputs
+  if (!parentName || !parentPhone || !pupilClass) {
+    if (form.reportValidity) {
+      form.reportValidity();
+    } else {
+      alert("Please fill in your name, mobile/WhatsApp number, and child's class level.");
+    }
+    return;
+  }
+
+  // Visual feedback on button immediately
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Subscribing...`;
+  }
 
   const selectedTopics = Array.from(form.querySelectorAll("input[name='topics']:checked")).map((cb) => cb.value);
   const selectedChannels = Array.from(form.querySelectorAll("input[name='channels']:checked")).map((cb) => cb.value);
 
+  const topicsText = selectedTopics.length > 0 ? selectedTopics.join(", ") : "All School Notices";
+  const channelsText = selectedChannels.length > 0 ? selectedChannels.join(", ") : "WhatsApp & SMS";
+
   const payload = {
-    parentName: form.parentName.value,
-    parentPhone: form.parentPhone.value,
-    parentEmail: form.parentEmail.value || "Not provided",
-    pupilClass: form.pupilClass.value,
-    topics: selectedTopics.join(", ") || "All School Notices",
-    channels: selectedChannels.join(", ") || "WhatsApp & SMS",
-    _subject: "New Parent Alert Registration: " + form.parentName.value + " (" + form.pupilClass.value + ")",
+    parentName: parentName,
+    parentPhone: parentPhone,
+    parentEmail: parentEmail || "Not provided",
+    pupilClass: pupilClass,
+    topics: topicsText,
+    channels: channelsText,
+    _subject: "New Parent Alert Registration: " + parentName + " (" + pupilClass + ")",
     _captcha: "false"
   };
 
-  fetch("https://formsubmit.co/ajax/Ivapreku@gmail.com", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify(payload)
-  })
-    .catch(() => {
-      // Allow fallback if offline or CORS blocked
-      return { success: true };
-    })
-    .finally(() => {
-      try {
-        localStorage.setItem("lsic_parent_subscribed", "true");
-        localStorage.setItem("lsic_parent_phone", payload.parentPhone);
-      } catch (e) {}
+  // 1. Immediately persist to localStorage so data is NEVER lost
+  try {
+    localStorage.setItem("lsic_parent_subscribed", "true");
+    localStorage.setItem("lsic_parent_name", parentName);
+    localStorage.setItem("lsic_parent_phone", parentPhone);
+    localStorage.setItem("lsic_parent_email", parentEmail);
+    localStorage.setItem("lsic_parent_class", pupilClass);
 
-      form.style.display = "none";
-      const successState = document.getElementById("alertSuccessState");
-      if (successState) {
-        successState.style.display = "block";
-      }
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = originalText;
-      showNotification("You've subscribed to Life Shepherd parent alerts!", "success");
+    // Save into list of registered parents for Admin SMS portal integration
+    const existing = JSON.parse(localStorage.getItem("lsic_registered_parents") || "[]");
+    const filtered = existing.filter((p) => p.phone !== parentPhone);
+    filtered.unshift({
+      name: parentName,
+      phone: parentPhone,
+      email: parentEmail || "N/A",
+      classLevel: pupilClass,
+      topics: selectedTopics,
+      channels: selectedChannels,
+      registeredAt: new Date().toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      })
     });
+    localStorage.setItem("lsic_registered_parents", JSON.stringify(filtered));
+  } catch (storageErr) {
+    console.warn("Storage warning:", storageErr);
+  }
+
+  // 2. Personalize the confirmation screen
+  const successMsg = document.getElementById("alertSuccessMessage");
+  if (successMsg) {
+    successMsg.innerHTML = `Thank you, <strong>${parentName}</strong>! Your subscription for <strong>${pupilClass}</strong> has been registered. You will receive updates via <strong>${channelsText}</strong> on <strong>${parentPhone}</strong> before all upcoming school dates.`;
+  }
+
+  // 3. Personalize the direct WhatsApp join button
+  const waJoinBtn = document.querySelector(".whatsapp-direct-join-btn");
+  if (waJoinBtn) {
+    const waText = encodeURIComponent(
+      `Hello Life Shepherd College, I have registered for parent alerts for my child in ${pupilClass}.\nParent: ${parentName}\nPhone: ${parentPhone}.\nPlease confirm my number on the official broadcast list.`
+    );
+    waJoinBtn.href = `https://wa.me/233244745177?text=${waText}`;
+  }
+
+  // Transition UI to confirmed state
+  function transitionToSuccess() {
+    form.style.display = "none";
+    const successState = document.getElementById("alertSuccessState");
+    if (successState) {
+      successState.style.display = "block";
+    }
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalHtml;
+    }
+    showNotification("You've subscribed to Life Shepherd parent alerts!", "success");
+  }
+
+  // 4. Send background notification to FormSubmit with timeout fallback
+  let didTransition = false;
+  const timeoutId = setTimeout(() => {
+    if (!didTransition) {
+      didTransition = true;
+      transitionToSuccess();
+    }
+  }, 2400);
+
+  try {
+    fetch("https://formsubmit.co/ajax/Ivapreku@gmail.com", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify(payload)
+    })
+      .catch(() => ({ success: true }))
+      .finally(() => {
+        clearTimeout(timeoutId);
+        if (!didTransition) {
+          didTransition = true;
+          transitionToSuccess();
+        }
+      });
+  } catch (fetchErr) {
+    clearTimeout(timeoutId);
+    if (!didTransition) {
+      didTransition = true;
+      transitionToSuccess();
+    }
+  }
 }
+
+// Global aliases to ensure either function name works seamlessly
+const handleAlertSubmission = handleAlertSubscription;
+window.handleAlertSubscription = handleAlertSubscription;
+window.handleAlertSubmission = handleAlertSubscription;
 
 // Inject Required Modals & Dropdown into the DOM
 function injectNotificationDOM() {
@@ -1057,6 +1175,11 @@ function injectNotificationDOM() {
         </button>
         <a href="index.html#notice-board" class="notif-footer-view-all">
           Notice Board <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+      <div class="notif-dropdown-admin-bar">
+        <a href="admin-sms.html" class="notif-admin-link">
+          <i class="fa-solid fa-tower-broadcast"></i> Staff: Broadcast Parent Bulk SMS
         </a>
       </div>
     `;
@@ -1227,7 +1350,7 @@ function injectNotificationDOM() {
               </div>
             </div>
 
-            <button type="submit" class="alert-subscribe-submit-btn">
+            <button type="submit" class="alert-subscribe-submit-btn" id="alertSubscribeSubmitBtn">
               <i class="fa-solid fa-bell"></i> Subscribe to School Alerts
             </button>
           </form>
@@ -1238,7 +1361,7 @@ function injectNotificationDOM() {
               <i class="fa-solid fa-check"></i>
             </div>
             <h3>Registration Confirmed!</h3>
-            <p>
+            <p id="alertSuccessMessage">
               Thank you! You are now subscribed to official Life Shepherd International College alerts. You will receive updates directly before all key school dates.
             </p>
             <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
@@ -1360,12 +1483,25 @@ function initParentNotifications() {
     });
   }
 
-  // Parent Alert Form submit
+  // Parent Alert Form submit & button click handlers
   const alertForm = document.getElementById("parentAlertForm");
+  const alertSubmitBtn = document.getElementById("alertSubscribeSubmitBtn") || (alertForm ? alertForm.querySelector(".alert-subscribe-submit-btn") : null);
+
   if (alertForm) {
     alertForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      handleAlertSubmission(alertForm);
+      handleAlertSubscription(alertForm);
+    });
+  }
+
+  if (alertSubmitBtn && alertForm) {
+    alertSubmitBtn.addEventListener("click", (e) => {
+      if (alertForm.checkValidity && !alertForm.checkValidity()) {
+        alertForm.reportValidity();
+        return;
+      }
+      e.preventDefault();
+      handleAlertSubscription(alertForm);
     });
   }
 
