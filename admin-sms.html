@@ -48,7 +48,7 @@
             <input
               type="password"
               id="adminPinInput"
-              placeholder="Enter Admin PIN (Default: 2026)"
+              placeholder="Enter 4-digit Security PIN"
               autocomplete="current-password"
               required
             />
@@ -66,7 +66,7 @@
             <i class="fa-solid fa-arrow-right-to-bracket"></i> Access SMS Portal
           </button>
           <div class="pin-hint-text">
-            <i class="fa-solid fa-circle-info"></i> Default School Admin PIN: <strong>2026</strong>
+            <i class="fa-solid fa-shield-halved"></i> Restricted Access: Authorized School Staff Only
           </div>
           <a href="index.html" class="pin-back-link">
             <i class="fa-solid fa-arrow-left"></i> Return to Public Website
@@ -408,22 +408,29 @@
 
                 <!-- Test SMS Single Dispatch -->
                 <div class="single-test-dispatch-box">
-                  <label for="testPhoneNumber">Send a Single Test SMS to verify formatting on parent's phone:</label>
-                  <div class="test-dispatch-form">
+                  <label for="testPhoneNumber">Deliver SMS Notice in Real Life to Parent Contact:</label>
+                  <div class="test-dispatch-form" style="gap: 8px; flex-wrap: wrap;">
                     <input
                       type="tel"
                       id="testPhoneNumber"
                       placeholder="e.g. 0202033492"
                       value="0202033492"
                       class="admin-input-styled"
+                      style="flex: 1 1 170px;"
                     />
-                    <button type="button" class="btn-send-test" id="sendSingleTestBtn">
-                      <i class="fa-solid fa-mobile-screen"></i> Send Test SMS
+                    <button type="button" class="btn-send-test" id="sendSingleTestBtn" title="Dispatch automated SMS via Arkesel Gateway API">
+                      <i class="fa-solid fa-tower-broadcast"></i> Send via Gateway
                     </button>
+                    <a href="sms:0202033492" class="btn-send-test" id="sendDirectDeviceSmsBtn" style="background: #0077b6; color: #fff; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Delivers REAL SMS to this phone using your mobile device carrier">
+                      <i class="fa-solid fa-paper-plane"></i> Send Real SMS (Phone)
+                    </a>
+                    <a href="https://wa.me/233202033492" target="_blank" rel="noopener noreferrer" class="btn-send-test" id="sendDirectWaBtn" style="background: #25d366; color: #fff; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Delivers REAL WhatsApp circular to this parent">
+                      <i class="fa-brands fa-whatsapp"></i> Send Real WhatsApp
+                    </a>
                   </div>
                   <!-- Quick Pick Parent Contacts -->
                   <div class="quick-test-contacts">
-                    <span class="quick-test-label"><i class="fa-solid fa-bolt"></i> Quick Pick:</span>
+                    <span class="quick-test-label"><i class="fa-solid fa-bolt"></i> Quick Pick Contact:</span>
                     <button type="button" class="quick-contact-pill telecel active" data-pick-phone="0202033492" data-pick-name="Joel Baiden" data-pick-carrier="Telecel">
                       <span class="pill-dot"></span> 0202033492 (Joel Baiden - Telecel)
                     </button>

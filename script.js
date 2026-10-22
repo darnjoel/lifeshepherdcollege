@@ -1479,14 +1479,24 @@ function injectNotificationDOM() {
             </div>
           </div>
 
-          <!-- Handset Bottom Actions -->
-          <div style="display: flex; gap: 8px; margin-top: 14px;">
-            <button type="button" class="cta-button primary" id="triggerHandsetTestBtn" style="flex: 1; padding: 10px; font-size: 0.82rem; justify-content: center;">
-              <i class="fa-solid fa-bolt"></i> Test Incoming SMS Now
-            </button>
-            <a href="admin-sms.html" class="cta-button secondary" style="padding: 10px 14px; font-size: 0.82rem; justify-content: center;">
-              <i class="fa-solid fa-tower-broadcast"></i> Admin Portal
-            </a>
+          <!-- Handset Bottom Real Delivery & Simulation Actions -->
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 14px;">
+            <div style="display: flex; gap: 8px;">
+              <a href="sms:0202033492?body=LSIC%20ADVISORY%3A%20Dear%20Parent%2C%20welcome%20to%20Life%20Shepherd%20International%20College%20updates." id="handsetModalRealSmsBtn" class="cta-button" style="flex: 1; padding: 9px; font-size: 0.8rem; justify-content: center; background: #0077b6; color: #fff; text-decoration: none;" title="Deliver real SMS using your mobile phone carrier">
+                <i class="fa-solid fa-paper-plane"></i> Send Real SMS (Phone)
+              </a>
+              <a href="https://wa.me/233202033492?text=LSIC%20ADVISORY%3A%20Dear%20Parent%2C%20welcome%20to%20Life%20Shepherd%20International%20College%20updates." target="_blank" rel="noopener noreferrer" id="handsetModalRealWaBtn" class="cta-button" style="flex: 1; padding: 9px; font-size: 0.8rem; justify-content: center; background: #25d366; color: #fff; text-decoration: none;" title="Send real WhatsApp message to this parent contact">
+                <i class="fa-brands fa-whatsapp"></i> Real WhatsApp
+              </a>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="cta-button primary" id="triggerHandsetTestBtn" style="flex: 1; padding: 9px; font-size: 0.8rem; justify-content: center;">
+                <i class="fa-solid fa-bolt"></i> Simulate Incoming SMS
+              </button>
+              <a href="admin-sms.html" class="cta-button secondary" style="padding: 9px 12px; font-size: 0.8rem; justify-content: center; text-decoration: none;">
+                <i class="fa-solid fa-tower-broadcast"></i> Admin Portal
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -1662,6 +1672,18 @@ function initParentNotifications() {
       if (senderSub) senderSub.textContent = "MTN Ghana • Verified School ID";
     }
 
+    // Sync direct real-life SMS & WhatsApp buttons on the handset modal
+    const handsetRealSms = document.getElementById("handsetModalRealSmsBtn");
+    const handsetRealWa = document.getElementById("handsetModalRealWaBtn");
+    const sampleMsg = encodeURIComponent("LSIC ADVISORY: Dear Parent, tomorrow's PTA general session will commence promptly at 9:30 AM at the School Assembly Hall. Transport available. Contact: 0244745177.");
+    if (handsetRealSms) {
+      handsetRealSms.href = `sms:${phone}?body=${sampleMsg}`;
+    }
+    if (handsetRealWa) {
+      const cleanPhone = phone.replace(/^0/, "233").replace(/\D/g, "");
+      handsetRealWa.href = `https://wa.me/${cleanPhone}?text=${sampleMsg}`;
+    }
+
     if (!chatArea) return;
 
     // Default authentic school circulars delivered to Life Shepherd parents
@@ -1787,6 +1809,20 @@ function initParentNotifications() {
   const triggerHandsetTestBtn = document.getElementById("triggerHandsetTestBtn");
   if (triggerHandsetTestBtn) {
     triggerHandsetTestBtn.addEventListener("click", triggerHandsetModalTest);
+  }
+
+  const handsetModalRealSmsBtn = document.getElementById("handsetModalRealSmsBtn");
+  if (handsetModalRealSmsBtn) {
+    handsetModalRealSmsBtn.addEventListener("click", () => {
+      showNotification(`Opening SMS app to deliver real SMS to ${currentHandsetPhone}...`, "success");
+    });
+  }
+
+  const handsetModalRealWaBtn = document.getElementById("handsetModalRealWaBtn");
+  if (handsetModalRealWaBtn) {
+    handsetModalRealWaBtn.addEventListener("click", () => {
+      showNotification(`Opening WhatsApp to deliver real circular to ${currentHandsetPhone}...`, "success");
+    });
   }
 
   // Triggers from Notice Board and Header
