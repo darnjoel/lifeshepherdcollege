@@ -31,47 +31,131 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body class="admin-sms-body">
-    <!-- Admin Authentication PIN Gate (Overlay) -->
-    <div class="admin-pin-overlay" id="adminPinOverlay">
-      <div class="admin-pin-card">
-        <div class="admin-pin-logo">
-          <img src="images/logo.png" alt="LSIC Crest" />
+    <!-- Admin Authentication Gate (Overlay) -->
+    <div class="admin-auth-overlay" id="adminPinOverlay">
+      <div class="admin-auth-card">
+        <div class="admin-auth-header">
+          <div class="admin-auth-logo">
+            <img src="images/logo.png" alt="LSIC Crest" />
+          </div>
+          <h2>Life Shepherd Administration</h2>
+          <p class="admin-auth-subtitle">
+            Authorized Staff Console &bull; Parent Bulk SMS Broadcast Infrastructure
+          </p>
         </div>
-        <h2>Life Shepherd Administration</h2>
-        <p class="admin-pin-subtitle">
-          Authorized Staff Portal: Parent Bulk SMS Broadcast System
-        </p>
 
-        <form id="adminPinForm" class="admin-pin-form">
-          <div class="pin-input-wrapper">
-            <i class="fa-solid fa-lock"></i>
-            <input
-              type="password"
-              id="adminPinInput"
-              placeholder="Enter 4-digit Security PIN"
-              autocomplete="current-password"
-              required
-            />
-            <button type="button" id="togglePinVisBtn" aria-label="Toggle PIN visibility">
-              <i class="fa-regular fa-eye"></i>
+        <!-- Auth Error & Lockout Banners -->
+        <div class="auth-error-banner" id="authErrorBanner" style="display: none;">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span id="authErrorText">Invalid credentials. Please verify your staff credentials.</span>
+        </div>
+
+        <div class="auth-lockout-banner" id="authLockoutBanner" style="display: none;">
+          <i class="fa-solid fa-user-lock"></i>
+          <span>Security Hold: 5 failed attempts. Please wait <strong id="lockoutTimerSpan">30</strong>s.</span>
+        </div>
+
+        <!-- Auth Mode Switcher Tabs -->
+        <div class="auth-mode-tabs" role="tablist">
+          <button type="button" class="auth-tab-btn active" id="tabStaffLogin" role="tab" aria-selected="true">
+            <i class="fa-solid fa-user-shield"></i> Staff Account
+          </button>
+          <button type="button" class="auth-tab-btn" id="tabPinLogin" role="tab" aria-selected="false">
+            <i class="fa-solid fa-key"></i> Quick PIN
+          </button>
+        </div>
+
+        <!-- Form 1: Staff Account Login (Username/Email + Password) -->
+        <form id="adminStaffLoginForm" class="admin-auth-form">
+          <div class="auth-input-group">
+            <label for="adminUsernameInput">Staff Username / Email:</label>
+            <div class="auth-input-wrapper">
+              <i class="fa-solid fa-user input-icon"></i>
+              <input
+                type="text"
+                id="adminUsernameInput"
+                placeholder="Staff Username or Email"
+                autocomplete="username"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="auth-input-group">
+            <label for="adminPasswordInput">Staff Password:</label>
+            <div class="auth-input-wrapper">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input
+                type="password"
+                id="adminPasswordInput"
+                placeholder="Enter Staff Password"
+                autocomplete="current-password"
+                required
+              />
+              <button type="button" class="btn-toggle-vis" id="togglePasswordVisBtn" aria-label="Toggle password visibility">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="auth-options-bar">
+            <label>
+              <input type="checkbox" id="rememberStaffLoginCheck" checked />
+              <span>Remember me</span>
+            </label>
+            <button type="button" class="auth-forgot-link" id="forgotCredentialsBtn">
+              Forgot credentials?
             </button>
           </div>
-          <div class="pin-remember-wrapper">
+
+          <button type="submit" class="admin-auth-submit-btn" id="btnSubmitStaffLogin">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Admin Console
+          </button>
+        </form>
+
+        <!-- Form 2: Quick PIN Access (Preserves 4-digit PIN access) -->
+        <form id="adminPinForm" class="admin-auth-form" style="display: none;">
+          <div class="auth-input-group">
+            <label for="adminPinInput">4-Digit Security PIN:</label>
+            <div class="auth-input-wrapper">
+              <i class="fa-solid fa-shield-halved input-icon"></i>
+              <input
+                type="password"
+                id="adminPinInput"
+                class="pin-field"
+                placeholder="••••"
+                maxlength="8"
+                autocomplete="current-password"
+              />
+              <button type="button" class="btn-toggle-vis" id="togglePinVisBtn" aria-label="Toggle PIN visibility">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="auth-options-bar">
             <label>
               <input type="checkbox" id="rememberSessionCheck" checked />
-              <span>Remember session on this device</span>
+              <span>Remember on this device</span>
             </label>
+            <button type="button" class="auth-forgot-link" id="pinForgotLink">
+              Forgot PIN?
+            </button>
           </div>
-          <button type="submit" class="admin-pin-submit-btn">
-            <i class="fa-solid fa-arrow-right-to-bracket"></i> Access SMS Portal
+
+          <button type="submit" class="admin-auth-submit-btn" id="btnSubmitPinLogin">
+            <i class="fa-solid fa-unlock-keyhole"></i> Unlock Console
           </button>
-          <div class="pin-hint-text">
-            <i class="fa-solid fa-shield-halved"></i> Restricted Access: Authorized School Staff Only
-          </div>
-          <a href="index.html" class="pin-back-link">
-            <i class="fa-solid fa-arrow-left"></i> Return to Public Website
-          </a>
         </form>
+
+        <div class="auth-security-badge">
+          <i class="fa-solid fa-shield-halved" style="color: var(--green-main);"></i>
+          <span>Restricted Access: Authorized School Staff Only</span>
+        </div>
+
+        <a href="index.html" class="auth-back-link">
+          <i class="fa-solid fa-arrow-left"></i> Return to Public Website
+        </a>
       </div>
     </div>
 
@@ -95,12 +179,35 @@
             <span class="pulse-indicator online"></span>
             <span id="gatewayNameText">Ghana SMS Gateway (Arkesel Ready)</span>
           </div>
+
+          <!-- Authenticated Staff User Badge -->
+          <div class="admin-staff-profile-chip" id="adminStaffProfileChip" title="Authenticated School Administrator">
+            <div class="admin-avatar-circle" id="headerAdminAvatar">A</div>
+            <div class="admin-profile-meta">
+              <span class="admin-profile-name" id="headerAdminName">Administrator</span>
+              <span class="admin-role-badge" id="headerAdminRole">Headmaster's Office</span>
+            </div>
+          </div>
+
+          <!-- Account Security Settings Button -->
+          <button class="admin-header-btn" id="openAdminSettingsBtn" title="Account & Security Settings" type="button">
+            <i class="fa-solid fa-gear"></i> <span>Security</span>
+          </button>
+
+          <!-- Lock Session Button -->
+          <button class="admin-header-btn" id="adminLockBtn" title="Lock Console" type="button">
+            <i class="fa-solid fa-lock"></i> <span>Lock</span>
+          </button>
+
+          <!-- Logout Button -->
+          <button class="admin-header-btn danger" id="adminLogoutBtn" title="Sign Out of Portal" type="button">
+            <i class="fa-solid fa-right-from-bracket"></i> <span>Sign Out</span>
+          </button>
+
+          <!-- Back to Website Link -->
           <a href="index.html" class="admin-exit-btn">
             <i class="fa-solid fa-arrow-left"></i> <span>Back to Website</span>
           </a>
-          <button class="admin-logout-btn" id="adminLogoutBtn" title="Lock Portal">
-            <i class="fa-solid fa-lock"></i>
-          </button>
         </div>
       </div>
     </header>
@@ -760,6 +867,148 @@
         <button type="button" class="cta-button primary" id="closeTransmissionBtn" style="padding: 10px 24px; width: 100%; display: none;">
           <i class="fa-solid fa-mobile-screen"></i> View Delivered Message on Phone Mockup
         </button>
+    <!-- Admin Account & Security Settings Modal -->
+    <div class="lsic-modal-backdrop" id="adminSettingsModal" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="lsic-modal-dialog" style="max-width: 520px;">
+        <div class="lsic-modal-header">
+          <div class="lsic-modal-badge" style="background: var(--green-pale); color: var(--green-deep);">
+            <i class="fa-solid fa-user-shield"></i> Administration Security
+          </div>
+          <button class="lsic-modal-close-btn" id="closeAdminSettingsBtn" aria-label="Close" type="button">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="lsic-modal-body" style="padding-top: 10px;">
+          <h2 style="font-size: 1.25rem; color: var(--green-deep); margin-bottom: 4px;">Staff Account & Security Credentials</h2>
+          <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 16px;">
+            Manage authorized administrator username, password, and terminal PIN for Life Shepherd SMS Portal.
+          </p>
+
+          <!-- Current Account Info -->
+          <div class="settings-section-title">
+            <i class="fa-solid fa-id-badge"></i> Administrator Profile
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+            <div class="auth-input-group" style="margin: 0;">
+              <label for="settingsDisplayName">Staff Display Name:</label>
+              <input type="text" id="settingsDisplayName" class="admin-input-styled" style="width: 100%;" value="Administrator" />
+            </div>
+            <div class="auth-input-group" style="margin: 0;">
+              <label for="settingsUsername">Staff Username / Email:</label>
+              <input type="text" id="settingsUsername" class="admin-input-styled" style="width: 100%;" value="admin" />
+            </div>
+          </div>
+
+          <!-- Update Password Section -->
+          <div class="settings-section-title">
+            <i class="fa-solid fa-key"></i> Change Admin Password
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div>
+                <label for="settingsNewPassword" style="font-size: 0.8rem; font-weight: 600; color: var(--gray-700);">New Password:</label>
+                <input type="password" id="settingsNewPassword" class="admin-input-styled" style="width: 100%;" placeholder="Leave blank to keep current" />
+              </div>
+              <div>
+                <label for="settingsConfirmPassword" style="font-size: 0.8rem; font-weight: 600; color: var(--gray-700);">Confirm New Password:</label>
+                <input type="password" id="settingsConfirmPassword" class="admin-input-styled" style="width: 100%;" placeholder="Repeat new password" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Update Quick PIN Section -->
+          <div class="settings-section-title">
+            <i class="fa-solid fa-shield-halved"></i> Update Quick Access PIN
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <div style="flex: 1;">
+              <label for="settingsNewPin" style="font-size: 0.8rem; font-weight: 600; color: var(--gray-700);">New 4-Digit PIN:</label>
+              <input type="password" id="settingsNewPin" class="admin-input-styled" maxlength="8" style="width: 100%; letter-spacing: 2px;" placeholder="Leave blank to keep" />
+            </div>
+            <div style="flex: 1; font-size: 0.78rem; color: var(--gray-600); padding-top: 18px;">
+              Used for instant terminal unlock on authorized campus workstations.
+            </div>
+          </div>
+
+          <!-- Recent Access Logs -->
+          <div class="settings-section-title">
+            <i class="fa-solid fa-clock-rotate-left"></i> Recent Authentication Activity
+          </div>
+          <div style="max-height: 140px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 8px;">
+            <table class="auth-log-table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Method</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="authLogsTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="lsic-modal-footer" style="justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-secondary" id="cancelAdminSettingsBtn">Cancel</button>
+          <button type="button" class="cta-button primary" id="saveAdminSettingsBtn" style="padding: 10px 22px;">
+            <i class="fa-solid fa-floppy-disk"></i> Save Security Credentials
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Credentials Recovery Modal -->
+    <div class="lsic-modal-backdrop" id="authRecoveryModal" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="lsic-modal-dialog" style="max-width: 480px;">
+        <div class="lsic-modal-header">
+          <div class="lsic-modal-badge" style="background: var(--blue-pale); color: var(--blue-deep);">
+            <i class="fa-solid fa-life-ring"></i> Administrative Support
+          </div>
+          <button class="lsic-modal-close-btn" id="closeRecoveryBtn" aria-label="Close" type="button">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="lsic-modal-body" style="padding-top: 10px;">
+          <h2 style="font-size: 1.25rem; color: var(--green-deep); margin-bottom: 6px;">Staff Credential Assistance</h2>
+          <p style="font-size: 0.86rem; color: var(--gray-600); margin-bottom: 14px;">
+            Access to the Life Shepherd Bulk SMS Broadcast System is restricted to authorized school administrators.
+          </p>
+
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 16px;">
+            <h4 style="font-size: 0.88rem; color: var(--green-deep); margin-bottom: 6px;">
+              <i class="fa-solid fa-building-columns"></i> Headmaster's Office / IT Desk
+            </h4>
+            <p style="font-size: 0.82rem; color: var(--gray-700); margin-bottom: 4px;">
+              Contact school IT administration or administration desk for credential resets:
+            </p>
+            <ul style="font-size: 0.82rem; color: var(--gray-700); padding-left: 20px; margin: 6px 0;">
+              <li><strong>Helpline:</strong> +233 24 474 5177 / +233 55 809 9525</li>
+              <li><strong>Email:</strong> admin@lifeshepherd.edu.gh</li>
+            </ul>
+          </div>
+
+          <div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 10px; padding: 12px; margin-bottom: 10px;">
+            <div style="font-weight: 700; font-size: 0.82rem; color: #92400e; margin-bottom: 4px;">
+              <i class="fa-solid fa-triangle-exclamation"></i> Emergency Local System Reset
+            </div>
+            <p style="font-size: 0.78rem; color: #78350f; margin-bottom: 8px;">
+              If you updated your password or PIN and forgot it, you can reset this browser's stored credentials back to school defaults.
+            </p>
+            <button type="button" class="btn btn-secondary" id="emergencyResetBtn" style="width: 100%; font-size: 0.8rem; background: #fff; color: #92400e; border: 1px solid #d97706;">
+              <i class="fa-solid fa-rotate-left"></i> Reset Browser Credentials to Default
+            </button>
+          </div>
+        </div>
+
+        <div class="lsic-modal-footer" style="justify-content: flex-end;">
+          <button type="button" class="cta-button primary" id="doneRecoveryBtn" style="padding: 9px 20px;">
+            Close
+          </button>
+        </div>
       </div>
     </div>
 

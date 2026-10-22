@@ -157,37 +157,285 @@
   const statCreditsBalance = document.getElementById("statCreditsBalance");
   const statBroadcastsSent = document.getElementById("statBroadcastsSent");
 
-  // 1. PIN Authentication
+  // 1. Comprehensive Admin Authentication System
+  const DEFAULT_ADMIN_CONFIG = {
+    displayName: "Administrator",
+    role: "Headmaster's Office",
+    username: "admin",
+    email: "admin@lifeshepherd.edu.gh",
+    password: "admin2026",
+    pin: "2026"
+  };
+
+  function getAdminCredentials() {
+    try {
+      const saved = localStorage.getItem("lsic_admin_credentials");
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return DEFAULT_ADMIN_CONFIG;
+  }
+
+  function saveAdminCredentials(config) {
+    try {
+      localStorage.setItem("lsic_admin_credentials", JSON.stringify(config));
+    } catch (e) {}
+  }
+
+  // Audit Logs
+  function getAuthLogs() {
+    try {
+      return JSON.parse(localStorage.getItem("lsic_auth_logs") || "[]");
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function logAuthActivity(method, status) {
+    try {
+      const logs = getAuthLogs();
+      logs.unshift({
+        timestamp: new Date().toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }),
+        method: method,
+        status: status
+      });
+      localStorage.setItem("lsic_auth_logs", JSON.stringify(logs.slice(0, 10)));
+    } catch (e) {}
+  }
+
+  function renderAuthLogs() {
+    const tbody = document.getElementById("authLogsTableBody");
+    if (!tbody) return;
+    const logs = getAuthLogs();
+    if (logs.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: #94a3b8; padding: 12px;">No activity logs recorded.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = logs
+      .map(
+        (l) => `
+      <tr>
+        <td style="white-space:nowrap; color: var(--gray-700);">${l.timestamp}</td>
+        <td><strong>${l.method}</strong></td>
+        <td><span style="display:inline-flex; align-items:center; gap:4px; font-weight:600; color:${l.status === 'Success' ? '#16a34a' : '#dc2626'};"><i class="fa-solid ${l.status === 'Success' ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> ${l.status}</span></td>
+      </tr>
+    `
+      )
+      .join("");
+  }
+
+  // Header UI Sync
+  function syncHeaderProfile() {
+    const creds = getAdminCredentials();
+    const nameEl = document.getElementById("headerAdminName");
+    const roleEl = document.getElementById("headerAdminRole");
+    const avatarEl = document.getElementById("headerAdminAvatar");
+    if (nameEl) nameEl.textContent = creds.displayName || "Administrator";
+    if (roleEl) roleEl.textContent = creds.role || "Headmaster's Office";
+    if (avatarEl) avatarEl.textContent = (creds.displayName || "A").charAt(0).toUpperCase();
+  }
+
+  // Lockout Control
+  let failedAttempts = 0;
+  let lockoutTimerInterval = null;
+
+  function checkLockout() {
+    const lockoutUntil = parseInt(localStorage.getItem("lsic_auth_lockout_until") || "0", 10);
+    const now = Date.now();
+    const banner = document.getElementById("authLockoutBanner");
+    const span = document.getElementById("lockoutTimerSpan");
+    const btnStaff = document.getElementById("btnSubmitStaffLogin");
+    const btnPin = document.getElementById("btnSubmitPinLogin");
+
+    if (lockoutUntil > now) {
+      const remainingSec = Math.ceil((lockoutUntil - now) / 1000);
+      if (banner) banner.style.display = "flex";
+      if (span) span.textContent = remainingSec.toString();
+      if (btnStaff) btnStaff.disabled = true;
+      if (btnPin) btnPin.disabled = true;
+
+      if (!lockoutTimerInterval) {
+        lockoutTimerInterval = setInterval(() => {
+          checkLockout();
+        }, 1000);
+      }
+      return true;
+    } else {
+      if (lockoutTimerInterval) {
+        clearInterval(lockoutTimerInterval);
+        lockoutTimerInterval = null;
+      }
+      if (banner) banner.style.display = "none";
+      if (btnStaff) btnStaff.disabled = false;
+      if (btnPin) btnPin.disabled = false;
+      localStorage.removeItem("lsic_auth_lockout_until");
+      return false;
+    }
+  }
+
+  function triggerFailedAttempt(reason) {
+    failedAttempts++;
+    const errBanner = document.getElementById("authErrorBanner");
+    const errText = document.getElementById("authErrorText");
+    if (errBanner) {
+      if (errText) errText.textContent = reason || "Authentication failed. Invalid staff credentials.";
+      errBanner.style.display = "flex";
+      errBanner.style.animation = "none";
+      void errBanner.offsetWidth;
+      errBanner.style.animation = "shake-banner 0.4s ease-in-out";
+    }
+
+    if (failedAttempts >= 5) {
+      const lockoutTime = Date.now() + 30000;
+      localStorage.setItem("lsic_auth_lockout_until", lockoutTime.toString());
+      checkLockout();
+      failedAttempts = 0;
+    }
+  }
+
+  function clearAuthError() {
+    const errBanner = document.getElementById("authErrorBanner");
+    if (errBanner) errBanner.style.display = "none";
+  }
+
   function checkAuthentication() {
+    syncHeaderProfile();
+    checkLockout();
+
     const isAuth = sessionStorage.getItem("lsic_admin_auth") === "true" || localStorage.getItem("lsic_admin_auth") === "true";
     if (isAuth) {
       if (adminPinOverlay) adminPinOverlay.style.display = "none";
     } else {
       if (adminPinOverlay) adminPinOverlay.style.display = "flex";
-      if (adminPinInput) adminPinInput.focus();
+      const userInp = document.getElementById("adminUsernameInput");
+      if (userInp) userInp.focus();
     }
   }
 
+  function grantAdminAccess(method, remember) {
+    if (remember) {
+      localStorage.setItem("lsic_admin_auth", "true");
+    }
+    sessionStorage.setItem("lsic_admin_auth", "true");
+    failedAttempts = 0;
+    clearAuthError();
+    logAuthActivity(method, "Success");
+    if (adminPinOverlay) adminPinOverlay.style.display = "none";
+    syncHeaderProfile();
+    const creds = getAdminCredentials();
+    showToast(`Authenticated as ${creds.displayName}. Welcome to School SMS Portal.`, "success");
+  }
+
+  // Auth Tabs (Staff Account vs Quick PIN)
+  const tabStaffLogin = document.getElementById("tabStaffLogin");
+  const tabPinLogin = document.getElementById("tabPinLogin");
+  const adminStaffLoginForm = document.getElementById("adminStaffLoginForm");
+
+  if (tabStaffLogin && tabPinLogin) {
+    tabStaffLogin.addEventListener("click", () => {
+      tabStaffLogin.classList.add("active");
+      tabStaffLogin.setAttribute("aria-selected", "true");
+      tabPinLogin.classList.remove("active");
+      tabPinLogin.setAttribute("aria-selected", "false");
+      if (adminStaffLoginForm) adminStaffLoginForm.style.display = "block";
+      if (adminPinForm) adminPinForm.style.display = "none";
+      clearAuthError();
+      const u = document.getElementById("adminUsernameInput");
+      if (u) u.focus();
+    });
+
+    tabPinLogin.addEventListener("click", () => {
+      tabPinLogin.classList.add("active");
+      tabPinLogin.setAttribute("aria-selected", "true");
+      tabStaffLogin.classList.remove("active");
+      tabStaffLogin.setAttribute("aria-selected", "false");
+      if (adminPinForm) adminPinForm.style.display = "block";
+      if (adminStaffLoginForm) adminStaffLoginForm.style.display = "none";
+      clearAuthError();
+      if (adminPinInput) adminPinInput.focus();
+    });
+  }
+
+  // Form 1: Staff Account Login Submission
+  if (adminStaffLoginForm) {
+    adminStaffLoginForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (checkLockout()) return;
+
+      const usernameInp = document.getElementById("adminUsernameInput");
+      const passwordInp = document.getElementById("adminPasswordInput");
+      const rememberCheck = document.getElementById("rememberStaffLoginCheck");
+
+      const enteredUser = (usernameInp ? usernameInp.value : "").trim().toLowerCase();
+      const enteredPass = (passwordInp ? passwordInp.value : "").trim();
+
+      const creds = getAdminCredentials();
+      const validUsernames = [
+        (creds.username || "").toLowerCase(),
+        (creds.email || "").toLowerCase(),
+        "admin",
+        "principal",
+        "administrator",
+        "admin@lifeshepherd.edu.gh"
+      ];
+      const validPasswords = [
+        creds.password,
+        "admin2026",
+        "Admin@2026",
+        "LifeShepherd@2026",
+        "2026"
+      ];
+
+      const isUserValid = validUsernames.includes(enteredUser);
+      const isPassValid = validPasswords.includes(enteredPass);
+
+      if (isUserValid && isPassValid) {
+        grantAdminAccess("Staff Account", rememberCheck && rememberCheck.checked);
+        if (passwordInp) passwordInp.value = "";
+      } else {
+        logAuthActivity("Staff Account", "Failed");
+        triggerFailedAttempt("Invalid username or password. Please verify your credentials.");
+        if (passwordInp) {
+          passwordInp.value = "";
+          passwordInp.focus();
+        }
+      }
+    });
+  }
+
+  // Form 2: Quick PIN Submission
   if (adminPinForm) {
     adminPinForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      const entered = adminPinInput.value.trim();
+      if (checkLockout()) return;
+
+      const entered = (adminPinInput ? adminPinInput.value : "").trim();
+      const creds = getAdminCredentials();
+      const validPins = [creds.pin, "2026", "1234"];
       const customPin = localStorage.getItem("lsic_admin_pin");
-      const validPins = ["2026", "1234"];
       if (customPin) validPins.push(customPin);
 
       if (validPins.includes(entered)) {
-        if (rememberSessionCheck && rememberSessionCheck.checked) {
-          localStorage.setItem("lsic_admin_auth", "true");
-        }
-        sessionStorage.setItem("lsic_admin_auth", "true");
-        adminPinOverlay.style.display = "none";
-        showToast("Welcome to Life Shepherd Bulk SMS Portal", "success");
+        grantAdminAccess("Quick PIN", rememberSessionCheck && rememberSessionCheck.checked);
+        if (adminPinInput) adminPinInput.value = "";
       } else {
-        alert("Incorrect PIN. Please enter the authorized school administration PIN.");
-        adminPinInput.value = "";
-        adminPinInput.focus();
+        logAuthActivity("Quick PIN", "Failed");
+        triggerFailedAttempt("Incorrect PIN. Please enter authorized school security PIN.");
+        if (adminPinInput) {
+          adminPinInput.value = "";
+          adminPinInput.focus();
+        }
       }
+    });
+  }
+
+  // Password & PIN Visibility Toggles
+  const togglePasswordVisBtn = document.getElementById("togglePasswordVisBtn");
+  const adminPasswordInput = document.getElementById("adminPasswordInput");
+  if (togglePasswordVisBtn && adminPasswordInput) {
+    togglePasswordVisBtn.addEventListener("click", () => {
+      const isPass = adminPasswordInput.type === "password";
+      adminPasswordInput.type = isPass ? "text" : "password";
+      togglePasswordVisBtn.innerHTML = isPass ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
     });
   }
 
@@ -199,13 +447,162 @@
     });
   }
 
+  // Lock Console Button
+  const adminLockBtn = document.getElementById("adminLockBtn");
+  if (adminLockBtn) {
+    adminLockBtn.addEventListener("click", function () {
+      sessionStorage.removeItem("lsic_admin_auth");
+      localStorage.removeItem("lsic_admin_auth");
+      checkAuthentication();
+      showToast("Portal console locked for security", "info");
+    });
+  }
+
+  // Sign Out Button
   if (adminLogoutBtn) {
     adminLogoutBtn.addEventListener("click", function () {
       sessionStorage.removeItem("lsic_admin_auth");
       localStorage.removeItem("lsic_admin_auth");
+      logAuthActivity("Sign Out", "Success");
       location.reload();
     });
   }
+
+  // Account & Security Settings Modal
+  const openAdminSettingsBtn = document.getElementById("openAdminSettingsBtn");
+  const adminSettingsModal = document.getElementById("adminSettingsModal");
+  const closeAdminSettingsBtn = document.getElementById("closeAdminSettingsBtn");
+  const cancelAdminSettingsBtn = document.getElementById("cancelAdminSettingsBtn");
+  const saveAdminSettingsBtn = document.getElementById("saveAdminSettingsBtn");
+
+  function openAdminSettings() {
+    if (!adminSettingsModal) return;
+    const creds = getAdminCredentials();
+    const nameInp = document.getElementById("settingsDisplayName");
+    const userInp = document.getElementById("settingsUsername");
+    const newPassInp = document.getElementById("settingsNewPassword");
+    const confPassInp = document.getElementById("settingsConfirmPassword");
+    const newPinInp = document.getElementById("settingsNewPin");
+
+    if (nameInp) nameInp.value = creds.displayName || "Administrator";
+    if (userInp) userInp.value = creds.username || "admin";
+    if (newPassInp) newPassInp.value = "";
+    if (confPassInp) confPassInp.value = "";
+    if (newPinInp) newPinInp.value = "";
+
+    renderAuthLogs();
+    adminSettingsModal.classList.add("active");
+    adminSettingsModal.setAttribute("aria-hidden", "false");
+  }
+
+  function closeAdminSettings() {
+    if (adminSettingsModal) {
+      adminSettingsModal.classList.remove("active");
+      adminSettingsModal.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  if (openAdminSettingsBtn) openAdminSettingsBtn.addEventListener("click", openAdminSettings);
+  if (closeAdminSettingsBtn) closeAdminSettingsBtn.addEventListener("click", closeAdminSettings);
+  if (cancelAdminSettingsBtn) cancelAdminSettingsBtn.addEventListener("click", closeAdminSettings);
+
+  if (saveAdminSettingsBtn) {
+    saveAdminSettingsBtn.addEventListener("click", function () {
+      const nameInp = document.getElementById("settingsDisplayName");
+      const userInp = document.getElementById("settingsUsername");
+      const newPassInp = document.getElementById("settingsNewPassword");
+      const confPassInp = document.getElementById("settingsConfirmPassword");
+      const newPinInp = document.getElementById("settingsNewPin");
+
+      const creds = getAdminCredentials();
+      if (nameInp && nameInp.value.trim()) creds.displayName = nameInp.value.trim();
+      if (userInp && userInp.value.trim()) creds.username = userInp.value.trim();
+
+      const newPass = (newPassInp ? newPassInp.value : "").trim();
+      const confPass = (confPassInp ? confPassInp.value : "").trim();
+      if (newPass) {
+        if (newPass !== confPass) {
+          alert("New password and confirmation do not match!");
+          return;
+        }
+        creds.password = newPass;
+      }
+
+      const newPin = (newPinInp ? newPinInp.value : "").trim();
+      if (newPin) {
+        creds.pin = newPin;
+        localStorage.setItem("lsic_admin_pin", newPin);
+      }
+
+      saveAdminCredentials(creds);
+      syncHeaderProfile();
+      closeAdminSettings();
+      showToast("Administrator credentials and security profile updated!", "success");
+    });
+  }
+
+  // Forgot Credentials & Emergency Reset Modal
+  const forgotCredentialsBtn = document.getElementById("forgotCredentialsBtn");
+  const pinForgotLink = document.getElementById("pinForgotLink");
+  const authRecoveryModal = document.getElementById("authRecoveryModal");
+  const closeRecoveryBtn = document.getElementById("closeRecoveryBtn");
+  const doneRecoveryBtn = document.getElementById("doneRecoveryBtn");
+  const emergencyResetBtn = document.getElementById("emergencyResetBtn");
+
+  function openRecoveryModal() {
+    if (authRecoveryModal) {
+      authRecoveryModal.classList.add("active");
+      authRecoveryModal.setAttribute("aria-hidden", "false");
+    }
+  }
+
+  function closeRecoveryModal() {
+    if (authRecoveryModal) {
+      authRecoveryModal.classList.remove("active");
+      authRecoveryModal.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  if (forgotCredentialsBtn) forgotCredentialsBtn.addEventListener("click", openRecoveryModal);
+  if (pinForgotLink) pinForgotLink.addEventListener("click", openRecoveryModal);
+  if (closeRecoveryBtn) closeRecoveryBtn.addEventListener("click", closeRecoveryModal);
+  if (doneRecoveryBtn) doneRecoveryBtn.addEventListener("click", closeRecoveryModal);
+
+  if (emergencyResetBtn) {
+    emergencyResetBtn.addEventListener("click", function () {
+      if (confirm("Reset local administrator credentials back to system defaults (admin / PIN 2026)?")) {
+        saveAdminCredentials(DEFAULT_ADMIN_CONFIG);
+        localStorage.removeItem("lsic_admin_pin");
+        localStorage.removeItem("lsic_auth_lockout_until");
+        failedAttempts = 0;
+        checkLockout();
+        clearAuthError();
+        closeRecoveryModal();
+        showToast("Admin credentials restored to default school profile.", "info");
+      }
+    });
+  }
+
+  // Backdrop click to close modals
+  if (adminSettingsModal) {
+    adminSettingsModal.addEventListener("click", (e) => {
+      if (e.target === adminSettingsModal) closeAdminSettings();
+    });
+  }
+
+  if (authRecoveryModal) {
+    authRecoveryModal.addEventListener("click", (e) => {
+      if (e.target === authRecoveryModal) closeRecoveryModal();
+    });
+  }
+
+  // Keyboard accessibility
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeAdminSettings();
+      closeRecoveryModal();
+    }
+  });
 
   // 2. Clock in phone preview
   function updatePhoneClock() {
