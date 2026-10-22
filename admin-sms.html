@@ -408,17 +408,27 @@
 
                 <!-- Test SMS Single Dispatch -->
                 <div class="single-test-dispatch-box">
-                  <label for="testPhoneNumber">Send a Single Test SMS to verify formatting on your phone:</label>
+                  <label for="testPhoneNumber">Send a Single Test SMS to verify formatting on parent's phone:</label>
                   <div class="test-dispatch-form">
                     <input
                       type="tel"
                       id="testPhoneNumber"
-                      placeholder="e.g. 0244 745 177"
-                      value="0244745177"
+                      placeholder="e.g. 0202033492"
+                      value="0202033492"
                       class="admin-input-styled"
                     />
                     <button type="button" class="btn-send-test" id="sendSingleTestBtn">
                       <i class="fa-solid fa-mobile-screen"></i> Send Test SMS
+                    </button>
+                  </div>
+                  <!-- Quick Pick Parent Contacts -->
+                  <div class="quick-test-contacts">
+                    <span class="quick-test-label"><i class="fa-solid fa-bolt"></i> Quick Pick:</span>
+                    <button type="button" class="quick-contact-pill telecel active" data-pick-phone="0202033492" data-pick-name="Joel Baiden" data-pick-carrier="Telecel">
+                      <span class="pill-dot"></span> 0202033492 (Joel Baiden - Telecel)
+                    </button>
+                    <button type="button" class="quick-contact-pill mtn" data-pick-phone="0554164411" data-pick-name="Mrs. Priscilla Mensah" data-pick-carrier="MTN">
+                      <span class="pill-dot"></span> 0554164411 (Mrs. Priscilla Mensah - MTN)
                     </button>
                   </div>
                 </div>
@@ -444,16 +454,47 @@
                 <span class="preview-badge">Real-time Simulation</span>
               </div>
 
+              <!-- Parent Device Switcher -->
+              <div class="phone-device-selector">
+                <button type="button" class="device-select-btn active" id="btnDeviceJoel" data-device-phone="0202033492">
+                  <i class="fa-solid fa-mobile"></i> Joel Baiden (0202033492)
+                </button>
+                <button type="button" class="device-select-btn" id="btnDevicePriscilla" data-device-phone="0554164411">
+                  <i class="fa-solid fa-mobile"></i> Mrs. Mensah (0554164411)
+                </button>
+              </div>
+
+              <!-- Active Carrier & Recipient Info -->
+              <div class="phone-carrier-info-bar">
+                <span>Carrier: <strong id="previewCarrierName" class="carrier-badge-telecel">Telecel Ghana 4G</strong></span>
+                <span>Recipient: <strong id="previewRecipientPhone">0202033492</strong></span>
+              </div>
+
               <!-- Smartphone Mockup Device -->
-              <div class="smartphone-frame">
+              <div class="smartphone-frame" id="smartphoneFrame">
                 <div class="smartphone-speaker"></div>
                 <div class="smartphone-camera"></div>
+
+                <!-- Live Push Notification Banner -->
+                <div class="phone-notification-banner" id="phoneNotificationBanner" style="display: none;">
+                  <div class="phone-notif-icon">
+                    <i class="fa-solid fa-comment"></i>
+                  </div>
+                  <div class="phone-notif-body">
+                    <div class="phone-notif-header">
+                      <span class="phone-notif-sender" id="notifBannerSender">L-SHEPHERD</span>
+                      <span class="phone-notif-time">Just now</span>
+                    </div>
+                    <div class="phone-notif-text" id="notifBannerText">New circular arrived from Life Shepherd College.</div>
+                  </div>
+                </div>
 
                 <div class="smartphone-screen">
                   <!-- Phone Status Bar -->
                   <div class="phone-status-bar">
                     <span class="status-time" id="previewPhoneTime">10:30</span>
                     <div class="status-icons">
+                      <span style="font-size: 0.65rem; margin-right: 4px; font-weight: 600;" id="phoneNetworkLabel">Telecel</span>
                       <i class="fa-solid fa-signal"></i>
                       <i class="fa-solid fa-wifi"></i>
                       <i class="fa-solid fa-battery-full"></i>
@@ -471,21 +512,21 @@
                         <span class="sender-name" id="previewSenderId">L-SHEPHERD</span>
                         <i class="fa-solid fa-circle-check verified-badge" title="Official Sender ID"></i>
                       </div>
-                      <span class="sender-sub">Text Message &bull; MTN / Telecel / AT</span>
+                      <span class="sender-sub" id="previewCarrierSub">Telecel Ghana &bull; Verified School ID</span>
                     </div>
                     <i class="fa-solid fa-circle-info"></i>
                   </div>
 
                   <!-- Messages Screen Content -->
-                  <div class="phone-chat-area">
+                  <div class="phone-chat-area" id="phoneChatArea">
                     <div class="chat-date-stamp">Today <span id="previewMessageTime">10:30 AM</span></div>
 
                     <div class="sms-speech-bubble" id="previewSpeechBubble">
                       <!-- Live Text injected here -->
                     </div>
 
-                    <div class="sms-delivery-receipt">
-                      <i class="fa-solid fa-check-double"></i> Delivered to Parent
+                    <div class="sms-delivery-receipt" id="previewDeliveryReceipt">
+                      <i class="fa-solid fa-check-double"></i> Delivered to 0202033492
                     </div>
                   </div>
 
@@ -635,6 +676,10 @@
               <strong id="confirmRecipients">342 Parent Numbers</strong>
             </div>
             <div class="confirm-row">
+              <span>Target Contacts Include:</span>
+              <strong id="confirmTargetNumbers">0202033492 (Joel Baiden), 0554164411 (Mrs. Mensah)</strong>
+            </div>
+            <div class="confirm-row">
               <span>SMS Units Required:</span>
               <strong id="confirmUnits">342 Units</strong>
             </div>
@@ -662,6 +707,52 @@
             <i class="fa-solid fa-check"></i> Authorize & Dispatch Now
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- Live Transmission Pipeline Animation Modal -->
+    <div class="transmission-overlay" id="transmissionModal">
+      <div class="transmission-card">
+        <div class="transmission-icon-spin">
+          <i class="fa-solid fa-tower-broadcast fa-fade"></i>
+        </div>
+        <h3 style="color: var(--green-deep); margin-bottom: 6px;">Transmitting SMS Broadcast</h3>
+        <p style="font-size: 0.88rem; color: var(--gray-600);" id="transmissionStatusSub">Dispatching official circular via Ghana SMS Gateway...</p>
+
+        <div class="pipeline-steps-list">
+          <div class="pipeline-step-item active" id="pipeStep1">
+            <div class="pipeline-step-icon"><i class="fa-solid fa-server"></i></div>
+            <div style="flex: 1;">
+              <strong>1. Gateway Handshake</strong>
+              <div style="font-size: 0.75rem; color: #64748b;" id="pipeStep1Sub">Connecting to Arkesel / Ghana SMS Core...</div>
+            </div>
+          </div>
+          <div class="pipeline-step-item" id="pipeStep2">
+            <div class="pipeline-step-icon"><i class="fa-solid fa-tower-cell"></i></div>
+            <div style="flex: 1;">
+              <strong>2. Telecom Tower Routing</strong>
+              <div style="font-size: 0.75rem; color: #64748b;">Routing to Telecel Ghana &bull; +233 20 203 3492 (Joel Baiden)</div>
+            </div>
+          </div>
+          <div class="pipeline-step-item" id="pipeStep3">
+            <div class="pipeline-step-icon"><i class="fa-solid fa-tower-cell"></i></div>
+            <div style="flex: 1;">
+              <strong>3. Telecom Tower Routing</strong>
+              <div style="font-size: 0.75rem; color: #64748b;">Routing to MTN Ghana &bull; +233 55 416 4411 (Mrs. Priscilla Mensah)</div>
+            </div>
+          </div>
+          <div class="pipeline-step-item" id="pipeStep4">
+            <div class="pipeline-step-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div style="flex: 1;">
+              <strong>4. Handset Delivery Confirmed</strong>
+              <div style="font-size: 0.75rem; color: #64748b;">SMS arrived on parent phones &bull; Receipts logged</div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="cta-button primary" id="closeTransmissionBtn" style="padding: 10px 24px; width: 100%; display: none;">
+          <i class="fa-solid fa-mobile-screen"></i> View Delivered Message on Phone Mockup
+        </button>
       </div>
     </div>
 

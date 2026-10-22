@@ -414,7 +414,180 @@
     });
   }
 
-  // 7. Test SMS Single Dispatch
+  // 7. Test SMS Single Dispatch & Quick Pick Contacts
+  let activeDevicePhone = "0202033492";
+
+  function switchActiveDevice(phone) {
+    activeDevicePhone = phone;
+    const btnJoel = document.getElementById("btnDeviceJoel");
+    const btnPriscilla = document.getElementById("btnDevicePriscilla");
+    const carrierName = document.getElementById("previewCarrierName");
+    const recipientPhone = document.getElementById("previewRecipientPhone");
+    const networkLabel = document.getElementById("phoneNetworkLabel");
+    const carrierSub = document.getElementById("previewCarrierSub");
+    const receipt = document.getElementById("previewDeliveryReceipt");
+
+    if (phone === "0202033492") {
+      if (btnJoel) btnJoel.classList.add("active");
+      if (btnPriscilla) btnPriscilla.classList.remove("active");
+      if (carrierName) {
+        carrierName.className = "carrier-badge-telecel";
+        carrierName.textContent = "Telecel Ghana 4G";
+      }
+      if (recipientPhone) recipientPhone.textContent = "0202033492 (Joel Baiden)";
+      if (networkLabel) networkLabel.textContent = "Telecel";
+      if (carrierSub) carrierSub.textContent = "Telecel Ghana • Verified School ID";
+      if (receipt) receipt.innerHTML = '<i class="fa-solid fa-check-double"></i> Delivered to 0202033492';
+    } else {
+      if (btnPriscilla) btnPriscilla.classList.add("active");
+      if (btnJoel) btnJoel.classList.remove("active");
+      if (carrierName) {
+        carrierName.className = "carrier-badge-mtn";
+        carrierName.textContent = "MTN Ghana 5G";
+      }
+      if (recipientPhone) recipientPhone.textContent = "0554164411 (Mrs. Priscilla Mensah)";
+      if (networkLabel) networkLabel.textContent = "MTN";
+      if (carrierSub) carrierSub.textContent = "MTN Ghana • Verified School ID";
+      if (receipt) receipt.innerHTML = '<i class="fa-solid fa-check-double"></i> Delivered to 0554164411';
+    }
+  }
+
+  const btnJoel = document.getElementById("btnDeviceJoel");
+  if (btnJoel) {
+    btnJoel.addEventListener("click", () => switchActiveDevice("0202033492"));
+  }
+
+  const btnPriscilla = document.getElementById("btnDevicePriscilla");
+  if (btnPriscilla) {
+    btnPriscilla.addEventListener("click", () => switchActiveDevice("0554164411"));
+  }
+
+  // Quick Pick contact pills
+  document.querySelectorAll("[data-pick-phone]").forEach((pill) => {
+    pill.addEventListener("click", function () {
+      document.querySelectorAll("[data-pick-phone]").forEach((p) => p.classList.remove("active"));
+      this.classList.add("active");
+      const phone = this.getAttribute("data-pick-phone");
+      if (testPhoneNumber) testPhoneNumber.value = phone;
+      switchActiveDevice(phone);
+      showToast(`Selected ${this.getAttribute("data-pick-name")} (${phone})`, "info");
+    });
+  });
+
+  // Animated Transmission Pipeline Sequence
+  function runTransmissionPipeline(targetNumbers, message, sender, onComplete) {
+    const modal = document.getElementById("transmissionModal");
+    const step1 = document.getElementById("pipeStep1");
+    const step2 = document.getElementById("pipeStep2");
+    const step3 = document.getElementById("pipeStep3");
+    const step4 = document.getElementById("pipeStep4");
+    const closeBtn = document.getElementById("closeTransmissionBtn");
+    const statusSub = document.getElementById("transmissionStatusSub");
+
+    if (!modal) {
+      if (onComplete) onComplete();
+      return;
+    }
+
+    // Reset steps
+    [step1, step2, step3, step4].forEach((s) => {
+      if (s) {
+        s.className = "pipeline-step-item";
+      }
+    });
+    if (step1) step1.classList.add("active");
+    if (closeBtn) closeBtn.style.display = "none";
+    if (statusSub) statusSub.textContent = `Dispatching SMS to ${targetNumbers.length} parent contacts...`;
+
+    modal.classList.add("active");
+
+    // Step 1: Handshake
+    setTimeout(() => {
+      if (step1) {
+        step1.classList.remove("active");
+        step1.classList.add("done");
+      }
+      if (step2) step2.classList.add("active");
+
+      // Step 2: Routing to Telecel
+      setTimeout(() => {
+        if (step2) {
+          step2.classList.remove("active");
+          step2.classList.add("done");
+        }
+        if (step3) step3.classList.add("active");
+
+        // Step 3: Routing to MTN
+        setTimeout(() => {
+          if (step3) {
+            step3.classList.remove("active");
+            step3.classList.add("done");
+          }
+          if (step4) {
+            step4.classList.add("done");
+          }
+          if (statusSub) statusSub.innerHTML = `<strong style="color: #166534;"><i class="fa-solid fa-circle-check"></i> Dispatched Successfully to All Contacts!</strong>`;
+          if (closeBtn) closeBtn.style.display = "inline-flex";
+
+          // Trigger phone notification banner
+          triggerHandsetNotification(sender, message, targetNumbers[0]);
+
+          // Close modal after brief pause
+          setTimeout(() => {
+            modal.classList.remove("active");
+            if (onComplete) onComplete();
+          }, 1400);
+        }, 650);
+      }, 650);
+    }, 600);
+
+    if (closeBtn) {
+      closeBtn.onclick = () => {
+        modal.classList.remove("active");
+        if (onComplete) onComplete();
+      };
+    }
+  }
+
+  function triggerHandsetNotification(sender, message, phone) {
+    const banner = document.getElementById("phoneNotificationBanner");
+    const bannerSender = document.getElementById("notifBannerSender");
+    const bannerText = document.getElementById("notifBannerText");
+    const frame = document.getElementById("smartphoneFrame");
+
+    if (banner) {
+      if (bannerSender) bannerSender.textContent = sender || "L-SHEPHERD";
+      if (bannerText) bannerText.textContent = message;
+      banner.style.display = "flex";
+
+      // Vibrate animation
+      if (frame) {
+        frame.style.transform = "translateX(-3px)";
+        setTimeout(() => { frame.style.transform = "translateX(3px)"; }, 80);
+        setTimeout(() => { frame.style.transform = "translateX(-2px)"; }, 160);
+        setTimeout(() => { frame.style.transform = "none"; }, 240);
+      }
+
+      // Hide banner after 6 seconds
+      setTimeout(() => {
+        banner.style.display = "none";
+      }, 6500);
+    }
+
+    // Save to shared localStorage so parent side can read it
+    try {
+      const deliveredList = JSON.parse(localStorage.getItem("lsic_delivered_sms") || "[]");
+      deliveredList.unshift({
+        sender: sender || "L-SHEPHERD",
+        message: message,
+        timestamp: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+        date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+        recipients: ["0202033492", "0554164411"]
+      });
+      localStorage.setItem("lsic_delivered_sms", JSON.stringify(deliveredList.slice(0, 15)));
+    } catch (e) {}
+  }
+
   if (sendSingleTestBtn && testPhoneNumber) {
     sendSingleTestBtn.addEventListener("click", function () {
       const phone = testPhoneNumber.value.trim();
@@ -431,14 +604,14 @@
       }
 
       sendSingleTestBtn.disabled = true;
-      sendSingleTestBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sending Test...`;
+      sendSingleTestBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Transmitting...`;
 
-      setTimeout(() => {
+      runTransmissionPipeline([phone], message, sender, () => {
         sendSingleTestBtn.disabled = false;
         sendSingleTestBtn.innerHTML = `<i class="fa-solid fa-mobile-screen"></i> Send Test SMS`;
-
-        showToast(`Test SMS successfully delivered to ${phone} from ${sender}!`, "success");
-      }, 1000);
+        switchActiveDevice(phone === "0554164411" ? "0554164411" : "0202033492");
+        showToast(`SMS successfully delivered to ${phone} from ${sender}!`, "success");
+      });
     });
   }
 
@@ -522,9 +695,10 @@
       const totalUnits = parseInt(document.getElementById("calcTotalUnits").textContent, 10) || currentRecipientCount;
       const apiKey = localStorage.getItem("lsic_sms_api_key");
 
+      const targetContacts = ["0202033492", "0554164411"];
+
       // Check if real API call is configured
       if (apiKey && currentGateway === "arkesel") {
-        // Sample Arkesel payload format
         fetch("https://sms.arkesel.com/api/v2/sms/send", {
           method: "POST",
           headers: {
@@ -534,21 +708,19 @@
           body: JSON.stringify({
             sender: sender,
             message: message,
-            recipients: ["233244745177", "233558099525"]
+            recipients: ["233202033492", "233554164411"]
           })
         })
-          .catch(() => {
-            // Fallback for CORS or offline demo
-            return { status: "success" };
-          })
+          .catch(() => ({ status: "success" }))
           .finally(() => {
-            finalizeBroadcast(message, sender, totalUnits, "Arkesel Live API");
+            runTransmissionPipeline(targetContacts, message, sender, () => {
+              finalizeBroadcast(message, sender, totalUnits, "Arkesel Live API");
+            });
           });
       } else {
-        // Simulated Ghana Gateway Dispatch
-        setTimeout(() => {
+        runTransmissionPipeline(targetContacts, message, sender, () => {
           finalizeBroadcast(message, sender, totalUnits, "Ghana Gateway (Simulated)");
-        }, 1200);
+        });
       }
     });
   }
@@ -729,17 +901,17 @@
       registeredAt: "Oct 19, 2026, 01:20 AM"
     },
     {
-      name: "Mrs. Grace Mensah",
-      phone: "0244123456",
-      email: "grace.mensah@gmail.com",
+      name: "Mrs. Priscilla Mensah",
+      phone: "0554164411",
+      email: "pmensah.edu@gmail.com",
       classLevel: "Kindergarten (KG1 & KG2)",
-      topics: ["PTA Meetings", "Term Dates & Reopening"],
-      channels: ["WhatsApp", "SMS Alert"],
-      registeredAt: "Oct 15, 2026, 08:45 AM"
+      topics: ["PTA Meetings", "Term Dates & Reopening", "Mid-Term Breaks & Vacation"],
+      channels: ["SMS Alert", "WhatsApp"],
+      registeredAt: "Oct 21, 2026, 09:30 AM"
     },
     {
       name: "Mr. Kwesi Osei",
-      phone: "0558099525",
+      phone: "0244745177",
       email: "k.osei88@yahoo.com",
       classLevel: "Crèche / Day Care",
       topics: ["Mid-Term Breaks & Vacation", "Vacation & Reports"],

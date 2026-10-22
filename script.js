@@ -1178,6 +1178,9 @@ function injectNotificationDOM() {
         </a>
       </div>
       <div class="notif-dropdown-admin-bar">
+        <button type="button" class="notif-admin-link" id="headerOpenHandsetBtn" style="background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.9); width: 100%; text-align: left; padding: 6px 0; font-size: 0.8rem; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-mobile-screen" style="color: #2ed573;"></i> 📱 View Parent SMS Phone (0202033492 / 0554164411)
+        </button>
         <a href="admin-sms.html" class="notif-admin-link">
           <i class="fa-solid fa-tower-broadcast"></i> Staff: Broadcast Parent Bulk SMS
         </a>
@@ -1378,6 +1381,118 @@ function injectNotificationDOM() {
     `;
     document.body.appendChild(alertModalBackdrop);
   }
+
+  // 4. Parent Smartphone Handset Simulation Modal
+  if (!document.getElementById("lsicParentHandsetModal")) {
+    const handsetModalBackdrop = document.createElement("div");
+    handsetModalBackdrop.className = "lsic-modal-backdrop";
+    handsetModalBackdrop.id = "lsicParentHandsetModal";
+    handsetModalBackdrop.setAttribute("aria-hidden", "true");
+    handsetModalBackdrop.setAttribute("role", "dialog");
+    handsetModalBackdrop.setAttribute("aria-modal", "true");
+    handsetModalBackdrop.innerHTML = `
+      <div class="lsic-modal-dialog" style="max-width: 440px; padding: 0; background: transparent; box-shadow: none;">
+        <!-- Smartphone Container Card -->
+        <div style="background: var(--white); border-radius: 28px; padding: 20px; box-shadow: 0 24px 60px rgba(0,0,0,0.35); border: 1px solid rgba(0,0,0,0.1);">
+          <!-- Top Handset Modal Header -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+            <div>
+              <h3 style="font-size: 1.05rem; color: var(--green-deep); margin: 0; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-mobile-screen"></i> Parent Phone Inbox
+              </h3>
+              <span style="font-size: 0.72rem; color: var(--gray-600);">Real-time Ghana SMS Delivery Simulation</span>
+            </div>
+            <button class="lsic-modal-close-btn" id="modalCloseHandsetBtn" aria-label="Close" type="button" style="position: static;">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <!-- Handset Device Switcher -->
+          <div class="phone-device-selector" style="margin-bottom: 10px;">
+            <button type="button" class="device-select-btn active" id="modalBtnJoel" data-handset-phone="0202033492">
+              <i class="fa-solid fa-mobile"></i> Joel Baiden (0202033492)
+            </button>
+            <button type="button" class="device-select-btn" id="modalBtnPriscilla" data-handset-phone="0554164411">
+              <i class="fa-solid fa-mobile"></i> Mrs. Mensah (0554164411)
+            </button>
+          </div>
+
+          <!-- Active Carrier Info Bar -->
+          <div class="phone-carrier-info-bar">
+            <span>Network: <strong id="modalCarrierName" class="carrier-badge-telecel">Telecel Ghana 4G</strong></span>
+            <span>SIM: <strong id="modalCarrierPhone">0202033492</strong></span>
+          </div>
+
+          <!-- Smartphone Frame -->
+          <div class="smartphone-frame" id="modalPhoneFrame" style="height: 480px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <div class="smartphone-speaker"></div>
+            <div class="smartphone-camera"></div>
+
+            <!-- Live Push Notification Banner -->
+            <div class="phone-notification-banner" id="modalPushBanner" style="display: none;">
+              <div class="phone-notif-icon">
+                <i class="fa-solid fa-comment-sms"></i>
+              </div>
+              <div class="phone-notif-body">
+                <div class="phone-notif-header">
+                  <span class="phone-notif-sender" id="modalBannerSender">L-SHEPHERD</span>
+                  <span class="phone-notif-time">Just now</span>
+                </div>
+                <div class="phone-notif-text" id="modalBannerText">Incoming school announcement...</div>
+              </div>
+            </div>
+
+            <div class="smartphone-screen">
+              <!-- Phone Status Bar -->
+              <div class="phone-status-bar">
+                <span class="status-time" id="modalStatusTime">10:30</span>
+                <div class="status-icons">
+                  <span style="font-size: 0.65rem; margin-right: 4px; font-weight: 600;" id="modalNetworkLabel">Telecel</span>
+                  <i class="fa-solid fa-signal"></i>
+                  <i class="fa-solid fa-wifi"></i>
+                  <i class="fa-solid fa-battery-full"></i>
+                </div>
+              </div>
+
+              <!-- Messages App Header -->
+              <div class="phone-app-header">
+                <i class="fa-solid fa-chevron-left"></i>
+                <div class="phone-sender-info">
+                  <div class="sender-avatar">
+                    <img src="images/logo.png" alt="LSIC" />
+                  </div>
+                  <div class="sender-name-box">
+                    <span class="sender-name">L-SHEPHERD</span>
+                    <i class="fa-solid fa-circle-check verified-badge" title="Official Sender ID"></i>
+                  </div>
+                  <span class="sender-sub" id="modalSenderSub">Telecel Ghana &bull; Verified School ID</span>
+                </div>
+                <i class="fa-solid fa-circle-info"></i>
+              </div>
+
+              <!-- Messages Conversation Area -->
+              <div class="phone-chat-area" id="modalPhoneChatArea">
+                <!-- Injected via JavaScript -->
+              </div>
+
+              <div class="phone-home-indicator"></div>
+            </div>
+          </div>
+
+          <!-- Handset Bottom Actions -->
+          <div style="display: flex; gap: 8px; margin-top: 14px;">
+            <button type="button" class="cta-button primary" id="triggerHandsetTestBtn" style="flex: 1; padding: 10px; font-size: 0.82rem; justify-content: center;">
+              <i class="fa-solid fa-bolt"></i> Test Incoming SMS Now
+            </button>
+            <a href="admin-sms.html" class="cta-button secondary" style="padding: 10px 14px; font-size: 0.82rem; justify-content: center;">
+              <i class="fa-solid fa-tower-broadcast"></i> Admin Portal
+            </a>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(handsetModalBackdrop);
+  }
 }
 
 // Initialization of all Parent Notification System components
@@ -1511,6 +1626,183 @@ function initParentNotifications() {
     openSubscribeModalBtn.addEventListener("click", openAlertModal);
   }
 
+  // Parent Handset Simulator Open/Close
+  let currentHandsetPhone = "0202033492";
+
+  function renderHandsetMessages(phone) {
+    const chatArea = document.getElementById("modalPhoneChatArea");
+    const networkLabel = document.getElementById("modalNetworkLabel");
+    const carrierName = document.getElementById("modalCarrierName");
+    const carrierPhone = document.getElementById("modalCarrierPhone");
+    const senderSub = document.getElementById("modalSenderSub");
+    const btnJoel = document.getElementById("modalBtnJoel");
+    const btnPriscilla = document.getElementById("modalBtnPriscilla");
+
+    currentHandsetPhone = phone;
+
+    if (phone === "0202033492") {
+      if (btnJoel) btnJoel.classList.add("active");
+      if (btnPriscilla) btnPriscilla.classList.remove("active");
+      if (networkLabel) networkLabel.textContent = "Telecel";
+      if (carrierName) {
+        carrierName.className = "carrier-badge-telecel";
+        carrierName.textContent = "Telecel Ghana 4G";
+      }
+      if (carrierPhone) carrierPhone.textContent = "0202033492 (Joel Baiden - Upper Primary)";
+      if (senderSub) senderSub.textContent = "Telecel Ghana • Verified School ID";
+    } else {
+      if (btnPriscilla) btnPriscilla.classList.add("active");
+      if (btnJoel) btnJoel.classList.remove("active");
+      if (networkLabel) networkLabel.textContent = "MTN";
+      if (carrierName) {
+        carrierName.className = "carrier-badge-mtn";
+        carrierName.textContent = "MTN Ghana 5G";
+      }
+      if (carrierPhone) carrierPhone.textContent = "0554164411 (Mrs. Priscilla Mensah - KG)";
+      if (senderSub) senderSub.textContent = "MTN Ghana • Verified School ID";
+    }
+
+    if (!chatArea) return;
+
+    // Default authentic school circulars delivered to Life Shepherd parents
+    const defaultMessages = [
+      {
+        time: "Sep 08, 08:00 AM",
+        text: "LSIC REOPENING: Dear Parent, School resumes for Term 2 on Tuesday, Jan 12, 2027 at 7:00 AM. Lessons start Day 1 in full uniform. Please settle accounts before resumption: 0244745177."
+      },
+      {
+        time: "Oct 12, 09:15 AM",
+        text: "LSIC PTA: Dear Parent, our 1st Term General PTA Meeting holds this Sat, Nov 14 at 9:30 AM at the School Hall. Agenda: Academics & transport. Prompt arrival valued: 0244745177."
+      },
+      {
+        time: "Oct 21, 02:40 PM",
+        text: "LSIC BREAK: Dear Parent, 1st Term Mid-Term Break starts Thurs, Oct 29. Dismissal Wed at 2:00 PM. Revision packs are in bags. Classes resume Tues, Nov 3 at 7:30 AM: 0558099525."
+      }
+    ];
+
+    // Read any recent broadcasts dispatched from admin-sms.html
+    try {
+      const liveDispatched = JSON.parse(localStorage.getItem("lsic_delivered_sms") || "[]");
+      liveDispatched.forEach((item) => {
+        defaultMessages.push({
+          time: `${item.date || "Today"}, ${item.timestamp || "Just now"}`,
+          text: item.message
+        });
+      });
+    } catch (e) {}
+
+    chatArea.innerHTML = defaultMessages
+      .map(
+        (m) => `
+        <div class="chat-date-stamp">${m.time}</div>
+        <div class="sms-speech-bubble" style="margin-bottom: 8px;">${m.text}</div>
+        <div class="sms-delivery-receipt" style="margin-bottom: 14px;">
+          <i class="fa-solid fa-check-double"></i> Delivered to ${phone}
+        </div>
+      `
+      )
+      .join("");
+
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+
+  function openParentHandsetModal(phone) {
+    const modalBackdrop = document.getElementById("lsicParentHandsetModal");
+    if (!modalBackdrop) return;
+
+    renderHandsetMessages(phone || currentHandsetPhone);
+    modalBackdrop.classList.add("active");
+    modalBackdrop.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-open");
+  }
+
+  function closeParentHandsetModal() {
+    const modalBackdrop = document.getElementById("lsicParentHandsetModal");
+    if (modalBackdrop) {
+      modalBackdrop.classList.remove("active");
+      modalBackdrop.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("modal-open");
+    }
+  }
+
+  // Trigger test incoming SMS on the handset modal
+  function triggerHandsetModalTest() {
+    const banner = document.getElementById("modalPushBanner");
+    const bannerText = document.getElementById("modalBannerText");
+    const frame = document.getElementById("modalPhoneFrame");
+
+    const sampleNotice = "LSIC ADVISORY: Dear Parent, tomorrow's PTA general session will commence promptly at 9:30 AM at the School Assembly Hall. Transport available. Contact: 0244745177.";
+
+    if (banner) {
+      if (bannerText) bannerText.textContent = sampleNotice;
+      banner.style.display = "flex";
+
+      // Vibrate animation
+      if (frame) {
+        frame.style.transform = "translateX(-4px)";
+        setTimeout(() => { frame.style.transform = "translateX(4px)"; }, 80);
+        setTimeout(() => { frame.style.transform = "translateX(-2px)"; }, 160);
+        setTimeout(() => { frame.style.transform = "none"; }, 240);
+      }
+
+      setTimeout(() => {
+        banner.style.display = "none";
+      }, 5500);
+    }
+
+    // Save into localStorage
+    try {
+      const deliveredList = JSON.parse(localStorage.getItem("lsic_delivered_sms") || "[]");
+      deliveredList.unshift({
+        sender: "L-SHEPHERD",
+        message: sampleNotice,
+        timestamp: new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+        date: "Today",
+        recipients: [currentHandsetPhone]
+      });
+      localStorage.setItem("lsic_delivered_sms", JSON.stringify(deliveredList.slice(0, 15)));
+    } catch (e) {}
+
+    renderHandsetMessages(currentHandsetPhone);
+    showNotification(`New SMS received on ${currentHandsetPhone} from L-SHEPHERD!`, "success");
+  }
+
+  // Button listeners for Handset Modal
+  const modalBtnJoel = document.getElementById("modalBtnJoel");
+  if (modalBtnJoel) modalBtnJoel.addEventListener("click", () => renderHandsetMessages("0202033492"));
+
+  const modalBtnPriscilla = document.getElementById("modalBtnPriscilla");
+  if (modalBtnPriscilla) modalBtnPriscilla.addEventListener("click", () => renderHandsetMessages("0554164411"));
+
+  const modalCloseHandsetBtn = document.getElementById("modalCloseHandsetBtn");
+  if (modalCloseHandsetBtn) modalCloseHandsetBtn.addEventListener("click", closeParentHandsetModal);
+
+  const handsetModalBackdrop = document.getElementById("lsicParentHandsetModal");
+  if (handsetModalBackdrop) {
+    handsetModalBackdrop.addEventListener("click", (e) => {
+      if (e.target === handsetModalBackdrop) closeParentHandsetModal();
+    });
+  }
+
+  const triggerHandsetTestBtn = document.getElementById("triggerHandsetTestBtn");
+  if (triggerHandsetTestBtn) {
+    triggerHandsetTestBtn.addEventListener("click", triggerHandsetModalTest);
+  }
+
+  // Triggers from Notice Board and Header
+  const openParentHandsetBtn = document.getElementById("openParentHandsetBtn");
+  if (openParentHandsetBtn) {
+    openParentHandsetBtn.addEventListener("click", () => openParentHandsetModal("0202033492"));
+  }
+
+  const headerOpenHandsetBtn = document.getElementById("headerOpenHandsetBtn");
+  if (headerOpenHandsetBtn) {
+    headerOpenHandsetBtn.addEventListener("click", () => {
+      closeNotifDropdown();
+      openParentHandsetModal("0202033492");
+    });
+  }
+
   // Notice Board Filter tabs (on index.html)
   document.querySelectorAll(".notice-tab-btn").forEach((tab) => {
     tab.addEventListener("click", () => {
@@ -1550,6 +1842,7 @@ function initParentNotifications() {
     if (e.key === "Escape") {
       closeNoticeModal();
       closeAlertModal();
+      closeParentHandsetModal();
       closeNotifDropdown();
       document.querySelectorAll(".cal-dropdown-menu.active").forEach((m) => m.classList.remove("active"));
     }
