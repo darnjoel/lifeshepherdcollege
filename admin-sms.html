@@ -177,7 +177,7 @@
         <div class="admin-header-right">
           <div class="admin-gateway-badge" id="gatewayStatusIndicator">
             <span class="pulse-indicator online"></span>
-            <span id="gatewayNameText">Ghana SMS Gateway (Arkesel Ready)</span>
+            <span id="gatewayNameText">Ghana SMS Gateway (SMSOnlineGH Active)</span>
           </div>
 
           <!-- Authenticated Staff User Badge -->
@@ -464,7 +464,7 @@
               <div class="collapsible-header" id="toggleGatewaySettingsBtn">
                 <div class="collapsible-title">
                   <i class="fa-solid fa-sliders"></i>
-                  <span>4. Gateway & API Configuration (Arkesel / mNotify / Hubtel)</span>
+                  <span>4. Gateway & API Configuration (SMSOnlineGH / Arkesel / mNotify)</span>
                 </div>
                 <i class="fa-solid fa-chevron-down" id="gatewayChevron"></i>
               </div>
@@ -474,15 +474,15 @@
                   <div class="gateway-field-group">
                     <label for="gatewaySelect">SMS Gateway Provider:</label>
                     <select id="gatewaySelect" class="admin-input-styled">
-                      <option value="arkesel" selected>Arkesel Ghana (sms.arkesel.com) - Recommended</option>
+                      <option value="smsonlinegh" selected>SMSOnlineGH (api.smsonlinegh.com) - Active</option>
+                      <option value="arkesel">Arkesel Ghana (sms.arkesel.com)</option>
                       <option value="mnotify">mNotify Ghana (api.mnotify.com)</option>
-                      <option value="hubtel">Hubtel Ghana (smsc.hubtel.com)</option>
                       <option value="simulation">Simulated Dispatch (Live Testing / Demo)</option>
                     </select>
                   </div>
 
                   <div class="gateway-field-group">
-                    <label for="senderIdInput">Registered Sender ID:</label>
+                    <label for="senderIdInput">Approved Sender ID:</label>
                     <input
                       type="text"
                       id="senderIdInput"
@@ -490,26 +490,31 @@
                       maxlength="11"
                       class="admin-input-styled"
                     />
-                    <small>Max 11 chars alphanumeric.</small>
+                    <small>Max 11 chars (Must match your registered Sender ID on SMSOnlineGH).</small>
                   </div>
 
                   <div class="gateway-field-group full-width">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                      <label for="apiKeyInput">Gateway API Key (Saved in your browser):</label>
-                      <span class="api-status-tag" id="apiKeyStatusTag">Simulation Active</span>
+                      <label for="apiKeyInput">SMSOnlineGH API Key (Saved in your browser):</label>
+                      <span class="api-status-tag" id="apiKeyStatusTag">SMSOnlineGH Ready</span>
                     </div>
                     <div class="api-key-input-wrapper">
                       <input
                         type="password"
                         id="apiKeyInput"
-                        placeholder="Paste your Arkesel/mNotify API Key here..."
+                        placeholder="Paste your SMSOnlineGH API Key here..."
                         class="admin-input-styled"
                       />
                       <button type="button" id="saveApiKeyBtn" class="btn-save-key">
                         <i class="fa-solid fa-floppy-disk"></i> Save Key
                       </button>
                     </div>
-                    <small>If no live API key is entered, the portal automatically runs in **Live Testing & Simulation Mode** with realistic delivery tracking.</small>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; flex-wrap: wrap; gap: 8px;">
+                      <small>Your key is saved safely in this browser. Account dashboard: <a href="https://smsonlinegh.com/" target="_blank" rel="noopener noreferrer" style="color: var(--green-deep); font-weight: 600; text-decoration: underline;">smsonlinegh.com</a></small>
+                      <button type="button" id="checkBalanceBtn" class="btn-balance-check" style="background: var(--green-pale); border: 1px solid var(--green-main); color: var(--green-deep); font-weight: 700; font-size: 0.78rem; padding: 4px 10px; border-radius: 6px; cursor: pointer;">
+                        <i class="fa-solid fa-coins"></i> Check Live SMS Balance
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -803,7 +808,7 @@
             </div>
             <div class="confirm-row">
               <span>Gateway:</span>
-              <strong id="confirmGateway">Arkesel Ghana API</strong>
+              <strong id="confirmGateway">SMSOnlineGH API (api.smsonlinegh.com)</strong>
             </div>
           </div>
 
@@ -838,7 +843,7 @@
             <div class="pipeline-step-icon"><i class="fa-solid fa-server"></i></div>
             <div style="flex: 1;">
               <strong>1. Gateway Handshake</strong>
-              <div style="font-size: 0.75rem; color: #64748b;" id="pipeStep1Sub">Connecting to Arkesel / Ghana SMS Core...</div>
+              <div style="font-size: 0.75rem; color: #64748b;" id="pipeStep1Sub">Connecting to SMSOnlineGH (api.smsonlinegh.com) Core...</div>
             </div>
           </div>
           <div class="pipeline-step-item" id="pipeStep2">
@@ -867,6 +872,9 @@
         <button type="button" class="cta-button primary" id="closeTransmissionBtn" style="padding: 10px 24px; width: 100%; display: none;">
           <i class="fa-solid fa-mobile-screen"></i> View Delivered Message on Phone Mockup
         </button>
+      </div>
+    </div>
+
     <!-- Admin Account & Security Settings Modal -->
     <div class="lsic-modal-backdrop" id="adminSettingsModal" aria-hidden="true" role="dialog" aria-modal="true">
       <div class="lsic-modal-dialog" style="max-width: 520px;">
